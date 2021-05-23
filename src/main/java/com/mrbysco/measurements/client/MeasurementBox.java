@@ -2,6 +2,8 @@ package com.mrbysco.measurements.client;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mrbysco.measurements.config.MeasurementsConfig;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.ActiveRenderInfo;
@@ -15,10 +17,10 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 // Credit: MadeBaruna - https://github.com/MadeBaruna/BlockMeter/blob/master/src/main/java/win/baruna/blockmeter/MeasureBox.java
 public class MeasurementBox {
@@ -34,8 +36,17 @@ public class MeasurementBox {
 		this.endPos = block;
 		this.dimensionKey = dimensionKey;
 		this.finished = false;
+        String lineColor = MeasurementsConfig.COMMON.lineColor.get();
 
-		this.color = DyeColor.YELLOW;
+        if (!lineColor.equalsIgnoreCase("RANDOM")) {
+		    this.color = DyeColor.valueOf(lineColor.toUpperCase());
+        } else {
+            Random randomNumGen = new Random();
+            int randomNum = randomNumGen.nextInt(15);
+            DyeColor[] dyeColors = DyeColor.values();
+            DyeColor randomColor = dyeColors[randomNum];
+		    this.color = randomColor;
+        }
 
 		this.setBoundingBox();
 	}
@@ -68,9 +79,9 @@ public class MeasurementBox {
 
 		Vector3d pos = renderInfo.getProjectedView();
 		double distance = box.getCenter().distanceTo(pos);
-		float lineWidth = 2f;
+		float lineWidth = MeasurementsConfig.COMMON.lineWidth.get();//2f;
 		if (distance > 48) {
-			lineWidth = 1.0f;
+			lineWidth = MeasurementsConfig.COMMON.lineWidthMax.get();//1.0f;
 		}
 
 		matrixStack.push();
@@ -104,6 +115,7 @@ public class MeasurementBox {
 		Collections.sort(lines);
 		final Vector3d lineZ = lines.get(0).line.getCenter();
 
+
 		lines.clear();
 		lines.add(new Line(new AxisAlignedBB(boxT.minX, boxT.minY, boxT.minZ, boxT.minX, boxT.maxY, boxT.minZ), pos, clippingHelper));
 		lines.add(new Line(new AxisAlignedBB(boxT.minX, boxT.minY, boxT.maxZ, boxT.minX, boxT.maxY, boxT.maxZ), pos, clippingHelper));
@@ -123,32 +135,34 @@ public class MeasurementBox {
 		matrixStack.push();
 		matrixStack.translate(-pos.x, -pos.y, -pos.z);
 
-		drawText(matrixStack, buffers, renderInfo, new Vector3d(lineX.x, lineX.y, lineX.z), String.valueOf(lengthX));
-		drawText(matrixStack, buffers, renderInfo, new Vector3d(lineY.x, lineY.y, lineY.z), String.valueOf(lengthY));
-		drawText(matrixStack, buffers, renderInfo, new Vector3d(lineZ.x, lineZ.y, lineZ.z), String.valueOf(lengthZ));
+		drawText(matrixStack, buffers, renderInfo, new Vector3d(lineX.x, lineX.y, lineX.z), String.valueOf(lengthX), DyeColor.RED);
+		drawText(matrixStack, buffers, renderInfo, new Vector3d(lineY.x, lineY.y, lineY.z), String.valueOf(lengthY), DyeColor.GREEN);
+		drawText(matrixStack, buffers, renderInfo, new Vector3d(lineZ.x, lineZ.y, lineZ.z), String.valueOf(lengthZ), DyeColor.BLUE);
+
 		matrixStack.pop();
 	}
 
-	private void drawText(MatrixStack matrixStack, RenderTypeBuffers buffers, ActiveRenderInfo renderInfo, Vector3d pos, String length) {
+	private void drawText(MatrixStack matrixStack, RenderTypeBuffers buffers, ActiveRenderInfo renderInfo, Vector3d pos, String length, DyeColor color) {
 		final FontRenderer font = Minecraft.getInstance().fontRenderer;
 
-		final float size = 0.02f;
+        final double doubleTextSize = MeasurementsConfig.COMMON.textSize.get();
+		final float floatTextSize = (float)doubleTextSize;//0.02f;
 
 		matrixStack.push();
-		matrixStack.translate(pos.x, pos.y + size * 5.0, pos.z);
+		matrixStack.translate(pos.x, pos.y + floatTextSize * 5.0, pos.z);
 		matrixStack.rotate(renderInfo.getRotation());
-		matrixStack.scale(-size, -size, -size);
+		matrixStack.scale(-floatTextSize, -floatTextSize, -floatTextSize);
 		matrixStack.translate(-font.getStringWidth(length) / 2f, 0, 0);
 		font.renderString(
 				length,
 				0,
 				0,
-				this.color.getTextColor(),
+				color.getTextColor(),
 				true,
 				matrixStack.getLast().getMatrix(),
 				buffers.getOutlineBufferSource(),
 				true,
-				this.color.getColorValue(),
+				color.getColorValue(),
 				15728880
 		);
 		matrixStack.pop();
