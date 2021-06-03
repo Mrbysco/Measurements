@@ -16,16 +16,16 @@ import org.apache.logging.log4j.Logger;
 
 @Mod(Measurements.MOD_ID)
 public class Measurements {
-    public static final String MOD_ID = "measurements";
-    public static final Logger LOGGER = LogManager.getLogger(MOD_ID);
+	public static final String MOD_ID = "measurements";
+	public static final Logger LOGGER = LogManager.getLogger(MOD_ID);
 
-    public Measurements() {
-        IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
-        ModLoadingContext.get().registerConfig(Type.COMMON, MeasurementsConfig.commonSpec);
-        eventBus.register(MeasurementsConfig.class);
+	public Measurements() {
+		IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
+		ModLoadingContext.get().registerConfig(Type.COMMON, MeasurementsConfig.commonSpec);
+		eventBus.register(MeasurementsConfig.class);
 
-        ItemRegistry.ITEMS.register(eventBus);
+		ItemRegistry.ITEMS.register(eventBus);
 
-        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> MinecraftForge.EVENT_BUS.register(new ClientHandler()));
-    }
+		DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> MinecraftForge.EVENT_BUS.register(new ClientHandler()));
+	}
 }

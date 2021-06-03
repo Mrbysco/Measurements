@@ -3,6 +3,7 @@ package com.mrbysco.measurements.client;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import com.mrbysco.measurements.config.MeasurementsConfig;
+import com.mrbysco.measurements.util.Utils;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -20,7 +21,6 @@ import net.minecraft.world.World;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 
 // Credit: MadeBaruna - https://github.com/MadeBaruna/BlockMeter/blob/master/src/main/java/win/baruna/blockmeter/MeasureBox.java
 public class MeasurementBox {
@@ -29,24 +29,48 @@ public class MeasurementBox {
 	public AxisAlignedBB box;
 	private final RegistryKey<World> dimensionKey;
 	private boolean finished;
-	private final DyeColor color;
+	private DyeColor lineColor;
+	private DyeColor textX;
+	private DyeColor textY;
+	private DyeColor textZ;
 
 	MeasurementBox(BlockPos block, RegistryKey<World> dimensionKey) {
 		this.startPos = block;
 		this.endPos = block;
 		this.dimensionKey = dimensionKey;
 		this.finished = false;
-        String lineColor = MeasurementsConfig.COMMON.lineColor.get();
 
-        if (!lineColor.equalsIgnoreCase("RANDOM")) {
-		    this.color = DyeColor.valueOf(lineColor.toUpperCase());
-        } else {
-            Random randomNumGen = new Random();
-            int randomNum = randomNumGen.nextInt(15);
-            DyeColor[] dyeColors = DyeColor.values();
-            DyeColor randomColor = dyeColors[randomNum];
-		    this.color = randomColor;
-        }
+		// Setup Rendered Line Color
+		String configLineColor = MeasurementsConfig.COMMON.lineColor.get();
+		switch (configLineColor) {
+			case "RANDOM" :
+				this.lineColor = Utils.getRandColor();
+				break;
+			default:
+				this.lineColor = DyeColor.valueOf(configLineColor.toUpperCase());
+				break;
+		}
+
+		// Setup Rendered Text Color
+		String textColor = MeasurementsConfig.COMMON.textColor.get();
+		switch (MeasurementsConfig.COMMON.textColor.get()) {
+			case "RANDOM":
+				DyeColor randColor = Utils.getRandColor();
+				this.textX = randColor;
+				this.textY = randColor;
+				this.textZ = randColor;
+			break;
+			case "XYZRGB":
+				this.textX = DyeColor.RED;
+				this.textY = DyeColor.GREEN;
+				this.textZ = DyeColor.BLUE;
+			break;
+			default:
+				this.textX = DyeColor.valueOf(textColor);
+				this.textY = DyeColor.valueOf(textColor);
+				this.textZ = DyeColor.valueOf(textColor);
+			break;
+		}
 
 		this.setBoundingBox();
 	}
@@ -71,10 +95,10 @@ public class MeasurementBox {
 	public void render(RegistryKey<World> currentDimensionKey, MatrixStack matrixStack, RenderTypeBuffers buffer, ActiveRenderInfo renderInfo, Matrix4f projection) {
 		if (!dimensionKey.getLocation().equals(currentDimensionKey.getLocation())) return;
 
-		final float[] color = this.color.getColorComponentValues();
-		final float r = color[0];
-		final float g = color[1];
-		final float b = color[2];
+		final float[] lineColor = this.lineColor.getColorComponentValues();
+		final float r = lineColor[0];
+		final float g = lineColor[1];
+		final float b = lineColor[2];
 		final float a = 0.95F;
 
 		Vector3d pos = renderInfo.getProjectedView();
@@ -135,9 +159,9 @@ public class MeasurementBox {
 		matrixStack.push();
 		matrixStack.translate(-pos.x, -pos.y, -pos.z);
 
-		drawText(matrixStack, buffers, renderInfo, new Vector3d(lineX.x, lineX.y, lineX.z), String.valueOf(lengthX), DyeColor.RED);
-		drawText(matrixStack, buffers, renderInfo, new Vector3d(lineY.x, lineY.y, lineY.z), String.valueOf(lengthY), DyeColor.GREEN);
-		drawText(matrixStack, buffers, renderInfo, new Vector3d(lineZ.x, lineZ.y, lineZ.z), String.valueOf(lengthZ), DyeColor.BLUE);
+		drawText(matrixStack, buffers, renderInfo, new Vector3d(lineX.x, lineX.y, lineX.z), String.valueOf(lengthX), this.textX);
+		drawText(matrixStack, buffers, renderInfo, new Vector3d(lineY.x, lineY.y, lineY.z), String.valueOf(lengthY), this.textY);
+		drawText(matrixStack, buffers, renderInfo, new Vector3d(lineZ.x, lineZ.y, lineZ.z), String.valueOf(lengthZ), this.textZ);
 
 		matrixStack.pop();
 	}
@@ -145,7 +169,7 @@ public class MeasurementBox {
 	private void drawText(MatrixStack matrixStack, RenderTypeBuffers buffers, ActiveRenderInfo renderInfo, Vector3d pos, String length, DyeColor color) {
 		final FontRenderer font = Minecraft.getInstance().fontRenderer;
 
-        final double doubleTextSize = MeasurementsConfig.COMMON.textSize.get();
+		final double doubleTextSize = MeasurementsConfig.COMMON.textSize.get();
 		final float floatTextSize = (float)doubleTextSize;//0.02f;
 
 		matrixStack.push();
