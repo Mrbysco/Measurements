@@ -5,6 +5,7 @@ import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.ActiveRenderInfo;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderTypeBuffers;
 import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.culling.ClippingHelper;
@@ -74,12 +75,13 @@ public class MeasurementBox {
 		}
 
 		matrixStack.push();
-		IVertexBuilder builder = buffer.getBufferSource().getBuffer(LineRenderType.lineRenderType(lineWidth));
+		IRenderTypeBuffer.Impl bufferSource = buffer.getBufferSource();
+		IVertexBuilder builder = bufferSource.getBuffer(LineRenderType.lineRenderType(lineWidth));
 
 		matrixStack.translate(-pos.x, -pos.y, -pos.z);
 
 		WorldRenderer.drawBoundingBox(matrixStack, builder, box, r, g, b, a);
-
+		bufferSource.finish(LineRenderType.lineRenderType(lineWidth));
 		matrixStack.pop();
 		drawLength(matrixStack, buffer, renderInfo, projection);
 	}
@@ -119,6 +121,7 @@ public class MeasurementBox {
 		lines.add(new Line(new AxisAlignedBB(boxT.minX, boxT.maxY, boxT.maxZ, boxT.maxX, boxT.maxY, boxT.maxZ), pos, clippingHelper));
 		Collections.sort(lines);
 		final Vector3d lineX = lines.get(0).line.getCenter();
+		lines.clear();
 
 		matrixStack.push();
 		matrixStack.translate(-pos.x, -pos.y, -pos.z);
@@ -139,18 +142,7 @@ public class MeasurementBox {
 		matrixStack.rotate(renderInfo.getRotation());
 		matrixStack.scale(-size, -size, -size);
 		matrixStack.translate(-font.getStringWidth(length) / 2f, 0, 0);
-		font.renderString(
-				length,
-				0,
-				0,
-				this.color.getTextColor(),
-				true,
-				matrixStack.getLast().getMatrix(),
-				buffers.getOutlineBufferSource(),
-				true,
-				this.color.getColorValue(),
-				15728880
-		);
+		font.drawString(matrixStack, length, 0,0, this.color.getColorValue());
 		matrixStack.pop();
 	}
 
