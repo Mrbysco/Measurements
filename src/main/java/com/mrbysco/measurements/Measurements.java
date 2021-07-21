@@ -26,9 +26,9 @@ public class Measurements {
 
 		ItemRegistry.ITEMS.register(eventBus);
 
-		DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
-			MinecraftForge.EVENT_BUS.register(new ClientHandler());
-			MinecraftForge.EVENT_BUS.register(new LoginHandler());
-		});
-	}
+        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
+            MinecraftForge.EVENT_BUS.register(new ClientHandler());
+            MinecraftForge.EVENT_BUS.register(new LoginHandler());
+        });
+    }
 }
