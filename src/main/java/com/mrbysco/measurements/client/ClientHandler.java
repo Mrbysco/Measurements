@@ -29,7 +29,10 @@ public class ClientHandler {
 	public void onPlayerTick(PlayerTickEvent event) {
 		if(event.phase == TickEvent.Phase.END && event.player.world.isRemote) {
 			PlayerEntity player = event.player;
-			if(player.getHeldItemMainhand().getItem() != ItemRegistry.TAPE_MEASURE_ITEM.get()) return;
+			if(player.getHeldItemMainhand().getItem() != ItemRegistry.TAPE_MEASURE_ITEM.get()) {
+				clear();
+				return;
+			}
 
 			if(boxList.size() > 0) {
 				MeasurementBox lastBox = boxList.get(boxList.size() - 1);
