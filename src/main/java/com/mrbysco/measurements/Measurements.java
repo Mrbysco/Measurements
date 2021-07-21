@@ -1,6 +1,7 @@
 package com.mrbysco.measurements;
 
 import com.mrbysco.measurements.client.ClientHandler;
+import com.mrbysco.measurements.client.LoginHandler;
 import com.mrbysco.measurements.config.MeasurementsConfig;
 
 import net.minecraftforge.api.distmarker.Dist;
@@ -26,6 +27,9 @@ public class Measurements {
 
 		ItemRegistry.ITEMS.register(eventBus);
 
-		DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> MinecraftForge.EVENT_BUS.register(new ClientHandler()));
+        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
+            MinecraftForge.EVENT_BUS.register(new ClientHandler());
+            MinecraftForge.EVENT_BUS.register(new LoginHandler());
+        });
 	}
 }

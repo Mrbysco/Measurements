@@ -17,7 +17,7 @@ public class LineRenderType extends RenderType {
 				DefaultVertexFormats.POSITION_COLOR, GL11.GL_LINES, 256,
 				RenderType.State.getBuilder()
 						.line(new LineState(OptionalDouble.of(lineWidth)))
-						.transparency(TRANSLUCENT_TRANSPARENCY)
+						.transparency(NO_TRANSPARENCY)
 						.texture(NO_TEXTURE)
 						.cull(CULL_DISABLED)
 						.depthTest(DEPTH_ALWAYS)
