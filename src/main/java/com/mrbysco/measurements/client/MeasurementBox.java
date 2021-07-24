@@ -76,16 +76,15 @@ public class MeasurementBox {
 		}
 
 		MultiBufferSource.BufferSource bufferSource = renderBuffers.bufferSource();
-		VertexConsumer builder = bufferSource.getBuffer(LineRenderType.lineRenderType(lineWidth));
 
 		poseStack.pushPose();
+		VertexConsumer builder = bufferSource.getBuffer(LineRenderType.lineRenderType(lineWidth));
 		//Translate negative camera position
 		poseStack.translate(-pos.x, -pos.y, -pos.z);
 		//Render the outline
 		LevelRenderer.renderLineBox(poseStack, builder, box, r, g, b, a);
-		poseStack.popPose();
-
 		bufferSource.endBatch(LineRenderType.lineRenderType(lineWidth));
+		poseStack.popPose();
 
 		//Render the line length text
 		drawLength(poseStack, camera, projection);
