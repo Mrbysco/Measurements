@@ -1,9 +1,9 @@
 package com.mrbysco.measurements.item;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemUseContext;
-import net.minecraft.util.ActionResultType;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraftforge.common.util.FakePlayer;
 
 public class TapeItem extends Item {
@@ -12,13 +12,13 @@ public class TapeItem extends Item {
 	}
 
 	@Override
-	public ActionResultType onItemUse(ItemUseContext context) {
-		PlayerEntity player = context.getPlayer();
+	public InteractionResult useOn(UseOnContext context) {
+		Player player = context.getPlayer();
 
-		if(player != null && !(player instanceof FakePlayer) && player.world.isRemote) {
-			return com.mrbysco.measurements.client.ClientHandler.addBox(player, context.func_242401_i());
+		if(player != null && !(player instanceof FakePlayer) && player.level.isClientSide) {
+			return com.mrbysco.measurements.client.ClientHandler.addBox(player, context.getHitResult());
 		}
 
-		return super.onItemUse(context);
+		return super.useOn(context);
 	}
 }

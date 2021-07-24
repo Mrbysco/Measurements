@@ -1,21 +1,23 @@
 package com.mrbysco.measurements.client;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Matrix4f;
+import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.renderer.ActiveRenderInfo;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.RenderTypeBuffers;
-import net.minecraft.client.renderer.WorldRenderer;
-import net.minecraft.client.renderer.culling.ClippingHelper;
-import net.minecraft.item.DyeColor;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Matrix4f;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.renderer.LevelRenderer;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderBuffers;
+import net.minecraft.client.renderer.culling.Frustum;
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -25,12 +27,13 @@ import java.util.List;
 public class MeasurementBox {
 	private final BlockPos startPos;
 	private BlockPos endPos;
-	public AxisAlignedBB box;
-	private final RegistryKey<World> dimensionKey;
+	public AABB box;
+	private final ResourceKey<Level> dimensionKey;
 	private boolean finished;
 	private final DyeColor color;
+	public VoxelShape shape;
 
-	MeasurementBox(BlockPos block, RegistryKey<World> dimensionKey) {
+	MeasurementBox(BlockPos block, ResourceKey<Level> dimensionKey) {
 		this.startPos = block;
 		this.endPos = block;
 		this.dimensionKey = dimensionKey;
@@ -49,7 +52,10 @@ public class MeasurementBox {
 		final int by = this.endPos.getY();
 		final int bz = this.endPos.getZ();
 
-		this.box = new AxisAlignedBB(Math.min(ax, bx), Math.min(ay, by), Math.min(az, bz),
+		this.shape = Shapes.box(Math.min(ax, bx), Math.min(ay, by), Math.min(az, bz),
+				Math.max(ax, bx) + 1, Math.max(ay, by) + 1, Math.max(az, bz) + 1);
+
+		this.box = new AABB(Math.min(ax, bx), Math.min(ay, by), Math.min(az, bz),
 				Math.max(ax, bx) + 1, Math.max(ay, by) + 1, Math.max(az, bz) + 1);
 	}
 
@@ -58,92 +64,93 @@ public class MeasurementBox {
 		this.setBoundingBox();
 	}
 
-	public void render(RegistryKey<World> currentDimensionKey, MatrixStack matrixStack, RenderTypeBuffers buffer, ActiveRenderInfo renderInfo, Matrix4f projection) {
-		if (!dimensionKey.getLocation().equals(currentDimensionKey.getLocation())) return;
+	public void render(ResourceKey<Level> currentDimensionKey, PoseStack poseStack, RenderBuffers renderBuffers, Camera camera, Matrix4f projection) {
+		if (!dimensionKey.location().equals(currentDimensionKey.location())) return;
 
-		final float[] color = this.color.getColorComponentValues();
+		final float[] color = this.color.getTextureDiffuseColors();
 		final float r = color[0];
 		final float g = color[1];
 		final float b = color[2];
 		final float a = 0.95F;
 
-		Vector3d pos = renderInfo.getProjectedView();
+		Vec3 pos = camera.getPosition();
+
 		double distance = box.getCenter().distanceTo(pos);
 		float lineWidth = 2f;
 		if (distance > 48) {
 			lineWidth = 1.0f;
 		}
 
-		matrixStack.push();
-		IRenderTypeBuffer.Impl bufferSource = buffer.getBufferSource();
-		IVertexBuilder builder = bufferSource.getBuffer(LineRenderType.lineRenderType(lineWidth));
+		poseStack.pushPose();
+		MultiBufferSource.BufferSource bufferSource = renderBuffers.bufferSource();
+		VertexConsumer builder = bufferSource.getBuffer(LineRenderType.lineRenderType(lineWidth));
 
-		matrixStack.translate(-pos.x, -pos.y, -pos.z);
+		poseStack.translate(-pos.x, -pos.y, -pos.z);
 
-		WorldRenderer.drawBoundingBox(matrixStack, builder, box, r, g, b, a);
-		bufferSource.finish(LineRenderType.lineRenderType(lineWidth));
-		matrixStack.pop();
-		drawLength(matrixStack, buffer, renderInfo, projection);
+		LevelRenderer.renderLineBox(poseStack, builder, box, r, g, b, a);
+		bufferSource.endBatch(LineRenderType.lineRenderType(lineWidth));
+		drawLength(poseStack, renderBuffers, camera, projection);
+		poseStack.popPose();
 	}
 
-	private void drawLength(MatrixStack matrixStack, RenderTypeBuffers buffers, ActiveRenderInfo renderInfo, Matrix4f projection) {
-		final int lengthX = (int) box.getXSize();
-		final int lengthY = (int) box.getYSize();
-		final int lengthZ = (int) box.getZSize();
+	private void drawLength(PoseStack poseStack, RenderBuffers renderBuffers, Camera camera, Matrix4f projection) {
+		final int lengthX = (int) box.getXsize();
+		final int lengthY = (int) box.getYsize();
+		final int lengthZ = (int) box.getZsize();
 
-		final Vector3d pos = renderInfo.getProjectedView();
+		final Vec3 pos = camera.getPosition();
 
-		final ClippingHelper clippingHelper = new ClippingHelper(matrixStack.getLast().getMatrix(), projection);
-		clippingHelper.setCameraPosition(pos.x, pos.y, pos.z);
+		final Frustum clippingHelper = new Frustum(poseStack.last().pose(), projection);
+		clippingHelper.prepare(pos.x, pos.y, pos.z);
 
-		AxisAlignedBB boxT = box.grow(0.08f);
+		AABB boxT = box.inflate(0.08f);
 
 		List<Line> lines = new ArrayList<>();
-		lines.add(new Line(new AxisAlignedBB(boxT.minX, boxT.minY, boxT.minZ, boxT.minX, boxT.minY, boxT.maxZ), pos, clippingHelper));
-		lines.add(new Line(new AxisAlignedBB(boxT.minX, boxT.maxY, boxT.minZ, boxT.minX, boxT.maxY, boxT.maxZ), pos, clippingHelper));
-		lines.add(new Line(new AxisAlignedBB(boxT.maxX, boxT.minY, boxT.minZ, boxT.maxX, boxT.minY, boxT.maxZ), pos, clippingHelper));
-		lines.add(new Line(new AxisAlignedBB(boxT.maxX, boxT.maxY, boxT.minZ, boxT.maxX, boxT.maxY, boxT.maxZ), pos, clippingHelper));
+		lines.add(new Line(new AABB(boxT.minX, boxT.minY, boxT.minZ, boxT.minX, boxT.minY, boxT.maxZ), pos, clippingHelper));
+		lines.add(new Line(new AABB(boxT.minX, boxT.maxY, boxT.minZ, boxT.minX, boxT.maxY, boxT.maxZ), pos, clippingHelper));
+		lines.add(new Line(new AABB(boxT.maxX, boxT.minY, boxT.minZ, boxT.maxX, boxT.minY, boxT.maxZ), pos, clippingHelper));
+		lines.add(new Line(new AABB(boxT.maxX, boxT.maxY, boxT.minZ, boxT.maxX, boxT.maxY, boxT.maxZ), pos, clippingHelper));
 		Collections.sort(lines);
-		final Vector3d lineZ = lines.get(0).line.getCenter();
+		final Vec3 lineZ = lines.get(0).line.getCenter();
 
 		lines.clear();
-		lines.add(new Line(new AxisAlignedBB(boxT.minX, boxT.minY, boxT.minZ, boxT.minX, boxT.maxY, boxT.minZ), pos, clippingHelper));
-		lines.add(new Line(new AxisAlignedBB(boxT.minX, boxT.minY, boxT.maxZ, boxT.minX, boxT.maxY, boxT.maxZ), pos, clippingHelper));
-		lines.add(new Line(new AxisAlignedBB(boxT.maxX, boxT.minY, boxT.minZ, boxT.maxX, boxT.maxY, boxT.minZ), pos, clippingHelper));
-		lines.add(new Line(new AxisAlignedBB(boxT.maxX, boxT.minY, boxT.maxZ, boxT.maxX, boxT.maxY, boxT.maxZ), pos, clippingHelper));
+		lines.add(new Line(new AABB(boxT.minX, boxT.minY, boxT.minZ, boxT.minX, boxT.maxY, boxT.minZ), pos, clippingHelper));
+		lines.add(new Line(new AABB(boxT.minX, boxT.minY, boxT.maxZ, boxT.minX, boxT.maxY, boxT.maxZ), pos, clippingHelper));
+		lines.add(new Line(new AABB(boxT.maxX, boxT.minY, boxT.minZ, boxT.maxX, boxT.maxY, boxT.minZ), pos, clippingHelper));
+		lines.add(new Line(new AABB(boxT.maxX, boxT.minY, boxT.maxZ, boxT.maxX, boxT.maxY, boxT.maxZ), pos, clippingHelper));
 		Collections.sort(lines);
-		final Vector3d lineY = lines.get(0).line.getCenter();
+		final Vec3 lineY = lines.get(0).line.getCenter();
 
 		lines.clear();
-		lines.add(new Line(new AxisAlignedBB(boxT.minX, boxT.minY, boxT.minZ, boxT.maxX, boxT.minY, boxT.minZ), pos, clippingHelper));
-		lines.add(new Line(new AxisAlignedBB(boxT.minX, boxT.minY, boxT.maxZ, boxT.maxX, boxT.minY, boxT.maxZ), pos, clippingHelper));
-		lines.add(new Line(new AxisAlignedBB(boxT.minX, boxT.maxY, boxT.minZ, boxT.maxX, boxT.maxY, boxT.minZ), pos, clippingHelper));
-		lines.add(new Line(new AxisAlignedBB(boxT.minX, boxT.maxY, boxT.maxZ, boxT.maxX, boxT.maxY, boxT.maxZ), pos, clippingHelper));
+		lines.add(new Line(new AABB(boxT.minX, boxT.minY, boxT.minZ, boxT.maxX, boxT.minY, boxT.minZ), pos, clippingHelper));
+		lines.add(new Line(new AABB(boxT.minX, boxT.minY, boxT.maxZ, boxT.maxX, boxT.minY, boxT.maxZ), pos, clippingHelper));
+		lines.add(new Line(new AABB(boxT.minX, boxT.maxY, boxT.minZ, boxT.maxX, boxT.maxY, boxT.minZ), pos, clippingHelper));
+		lines.add(new Line(new AABB(boxT.minX, boxT.maxY, boxT.maxZ, boxT.maxX, boxT.maxY, boxT.maxZ), pos, clippingHelper));
 		Collections.sort(lines);
-		final Vector3d lineX = lines.get(0).line.getCenter();
+		final Vec3 lineX = lines.get(0).line.getCenter();
 		lines.clear();
 
-		matrixStack.push();
-		matrixStack.translate(-pos.x, -pos.y, -pos.z);
+		poseStack.pushPose();
+		poseStack.translate(-pos.x, -pos.y, -pos.z);
 
-		drawText(matrixStack, buffers, renderInfo, new Vector3d(lineX.x, lineX.y, lineX.z), String.valueOf(lengthX));
-		drawText(matrixStack, buffers, renderInfo, new Vector3d(lineY.x, lineY.y, lineY.z), String.valueOf(lengthY));
-		drawText(matrixStack, buffers, renderInfo, new Vector3d(lineZ.x, lineZ.y, lineZ.z), String.valueOf(lengthZ));
-		matrixStack.pop();
+		drawText(poseStack, renderBuffers, camera, new Vec3(lineX.x, lineX.y, lineX.z), String.valueOf(lengthX));
+		drawText(poseStack, renderBuffers, camera, new Vec3(lineY.x, lineY.y, lineY.z), String.valueOf(lengthY));
+		drawText(poseStack, renderBuffers, camera, new Vec3(lineZ.x, lineZ.y, lineZ.z), String.valueOf(lengthZ));
+		poseStack.popPose();
 	}
 
-	private void drawText(MatrixStack matrixStack, RenderTypeBuffers buffers, ActiveRenderInfo renderInfo, Vector3d pos, String length) {
-		final FontRenderer font = Minecraft.getInstance().fontRenderer;
+	private void drawText(PoseStack poseStack, RenderBuffers renderBuffers, Camera camera, Vec3 pos, String length) {
+		final Font font = Minecraft.getInstance().font;
 
 		final float size = 0.02f;
 
-		matrixStack.push();
-		matrixStack.translate(pos.x, pos.y + size * 5.0, pos.z);
-		matrixStack.rotate(renderInfo.getRotation());
-		matrixStack.scale(-size, -size, -size);
-		matrixStack.translate(-font.getStringWidth(length) / 2f, 0, 0);
-		font.drawString(matrixStack, length, 0,0, this.color.getColorValue());
-		matrixStack.pop();
+		poseStack.pushPose();
+		poseStack.translate(pos.x, pos.y + size * 5.0, pos.z);
+		poseStack.mulPose(camera.rotation());
+		poseStack.scale(-size, -size, -size);
+		poseStack.translate(-font.width(length) / 2f, 0, 0);
+		font.draw(poseStack, length, 0,0, this.color.getTextColor());
+		poseStack.popPose();
 	}
 
 	public boolean isFinished() {
@@ -155,13 +162,13 @@ public class MeasurementBox {
 	}
 
 	private static class Line implements Comparable<Line> {
-		AxisAlignedBB line;
+		AABB line;
 		boolean isVisible;
 		double distance;
 
-		Line(AxisAlignedBB line, Vector3d pos, ClippingHelper clippingHelper) {
+		Line(AABB line, Vec3 pos, Frustum clippingHelper) {
 			this.line = line;
-			this.isVisible = clippingHelper.isBoundingBoxInFrustum(line);
+			this.isVisible = clippingHelper.isVisible(line);
 			this.distance = line.getCenter().distanceTo(pos);
 		}
 
