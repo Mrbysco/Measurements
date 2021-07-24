@@ -16,8 +16,6 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.phys.shapes.Shapes;
-import net.minecraft.world.phys.shapes.VoxelShape;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -31,7 +29,6 @@ public class MeasurementBox {
 	private final ResourceKey<Level> dimensionKey;
 	private boolean finished;
 	private final DyeColor color;
-	public VoxelShape shape;
 
 	MeasurementBox(BlockPos block, ResourceKey<Level> dimensionKey) {
 		this.startPos = block;
@@ -51,9 +48,6 @@ public class MeasurementBox {
 		final int bx = this.endPos.getX();
 		final int by = this.endPos.getY();
 		final int bz = this.endPos.getZ();
-
-		this.shape = Shapes.box(Math.min(ax, bx), Math.min(ay, by), Math.min(az, bz),
-				Math.max(ax, bx) + 1, Math.max(ay, by) + 1, Math.max(az, bz) + 1);
 
 		this.box = new AABB(Math.min(ax, bx), Math.min(ay, by), Math.min(az, bz),
 				Math.max(ax, bx) + 1, Math.max(ay, by) + 1, Math.max(az, bz) + 1);
@@ -81,19 +75,23 @@ public class MeasurementBox {
 			lineWidth = 1.0f;
 		}
 
-		poseStack.pushPose();
 		MultiBufferSource.BufferSource bufferSource = renderBuffers.bufferSource();
 		VertexConsumer builder = bufferSource.getBuffer(LineRenderType.lineRenderType(lineWidth));
 
+		poseStack.pushPose();
+		//Translate negative camera position
 		poseStack.translate(-pos.x, -pos.y, -pos.z);
-
+		//Render the outline
 		LevelRenderer.renderLineBox(poseStack, builder, box, r, g, b, a);
-		bufferSource.endBatch(LineRenderType.lineRenderType(lineWidth));
-		drawLength(poseStack, renderBuffers, camera, projection);
 		poseStack.popPose();
+
+		bufferSource.endBatch(LineRenderType.lineRenderType(lineWidth));
+
+		//Render the line length text
+		drawLength(poseStack, camera, projection);
 	}
 
-	private void drawLength(PoseStack poseStack, RenderBuffers renderBuffers, Camera camera, Matrix4f projection) {
+	private void drawLength(PoseStack poseStack, Camera camera, Matrix4f projection) {
 		final int lengthX = (int) box.getXsize();
 		final int lengthY = (int) box.getYsize();
 		final int lengthZ = (int) box.getZsize();
@@ -133,13 +131,13 @@ public class MeasurementBox {
 		poseStack.pushPose();
 		poseStack.translate(-pos.x, -pos.y, -pos.z);
 
-		drawText(poseStack, renderBuffers, camera, new Vec3(lineX.x, lineX.y, lineX.z), String.valueOf(lengthX));
-		drawText(poseStack, renderBuffers, camera, new Vec3(lineY.x, lineY.y, lineY.z), String.valueOf(lengthY));
-		drawText(poseStack, renderBuffers, camera, new Vec3(lineZ.x, lineZ.y, lineZ.z), String.valueOf(lengthZ));
+		drawText(poseStack, camera, new Vec3(lineX.x, lineX.y, lineX.z), String.valueOf(lengthX));
+		drawText(poseStack, camera, new Vec3(lineY.x, lineY.y, lineY.z), String.valueOf(lengthY));
+		drawText(poseStack, camera, new Vec3(lineZ.x, lineZ.y, lineZ.z), String.valueOf(lengthZ));
 		poseStack.popPose();
 	}
 
-	private void drawText(PoseStack poseStack, RenderBuffers renderBuffers, Camera camera, Vec3 pos, String length) {
+	private void drawText(PoseStack poseStack, Camera camera, Vec3 pos, String length) {
 		final Font font = Minecraft.getInstance().font;
 
 		final float size = 0.02f;
