@@ -59,7 +59,9 @@ public class ClientHandler {
 		PoseStack poseStack = event.getMatrixStack();
 		RenderBuffers renderBuffers = minecraft.renderBuffers();
 		Camera camera = minecraft.gameRenderer.getMainCamera();
+		poseStack.pushPose();
 		boxList.forEach(box -> box.render(currentDimension, poseStack, renderBuffers, camera, projectionMatrix));
+		poseStack.popPose();
 	}
 
 	public static InteractionResult addBox(Player playerEntity, BlockHitResult hitResult) {

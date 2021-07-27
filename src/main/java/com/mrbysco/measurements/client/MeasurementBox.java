@@ -9,6 +9,7 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderBuffers;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
@@ -78,12 +79,13 @@ public class MeasurementBox {
 		MultiBufferSource.BufferSource bufferSource = renderBuffers.bufferSource();
 
 		poseStack.pushPose();
-		VertexConsumer builder = bufferSource.getBuffer(LineRenderType.lineRenderType(lineWidth));
+		final RenderType renderType = LineRenderType.lineRenderType(lineWidth);
+		VertexConsumer builder = bufferSource.getBuffer(renderType);
 		//Translate negative camera position
 		poseStack.translate(-pos.x, -pos.y, -pos.z);
 		//Render the outline
 		LevelRenderer.renderLineBox(poseStack, builder, box, r, g, b, a);
-		bufferSource.endBatch(LineRenderType.lineRenderType(lineWidth));
+		bufferSource.endBatch(renderType);
 		poseStack.popPose();
 
 		//Render the line length text
