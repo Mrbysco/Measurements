@@ -59,44 +59,44 @@ public class MeasurementBox {
 	}
 
 	public void render(RegistryKey<World> currentDimensionKey, MatrixStack matrixStack, RenderTypeBuffers buffer, ActiveRenderInfo renderInfo, Matrix4f projection) {
-		if (!dimensionKey.getLocation().equals(currentDimensionKey.getLocation())) return;
+		if (!dimensionKey.location().equals(currentDimensionKey.location())) return;
 
-		final float[] color = this.color.getColorComponentValues();
+		final float[] color = this.color.getTextureDiffuseColors();
 		final float r = color[0];
 		final float g = color[1];
 		final float b = color[2];
 		final float a = 0.95F;
 
-		Vector3d pos = renderInfo.getProjectedView();
+		Vector3d pos = renderInfo.getPosition();
 		double distance = box.getCenter().distanceTo(pos);
 		float lineWidth = 2f;
 		if (distance > 48) {
 			lineWidth = 1.0f;
 		}
 
-		matrixStack.push();
-		IRenderTypeBuffer.Impl bufferSource = buffer.getBufferSource();
+		matrixStack.pushPose();
+		IRenderTypeBuffer.Impl bufferSource = buffer.bufferSource();
 		IVertexBuilder builder = bufferSource.getBuffer(LineRenderType.lineRenderType(lineWidth));
 
 		matrixStack.translate(-pos.x, -pos.y, -pos.z);
 
-		WorldRenderer.drawBoundingBox(matrixStack, builder, box, r, g, b, a);
-		bufferSource.finish(LineRenderType.lineRenderType(lineWidth));
-		matrixStack.pop();
+		WorldRenderer.renderLineBox(matrixStack, builder, box, r, g, b, a);
+		bufferSource.endBatch(LineRenderType.lineRenderType(lineWidth));
+		matrixStack.popPose();
 		drawLength(matrixStack, buffer, renderInfo, projection);
 	}
 
 	private void drawLength(MatrixStack matrixStack, RenderTypeBuffers buffers, ActiveRenderInfo renderInfo, Matrix4f projection) {
-		final int lengthX = (int) box.getXSize();
-		final int lengthY = (int) box.getYSize();
-		final int lengthZ = (int) box.getZSize();
+		final int lengthX = (int) box.getXsize();
+		final int lengthY = (int) box.getYsize();
+		final int lengthZ = (int) box.getZsize();
 
-		final Vector3d pos = renderInfo.getProjectedView();
+		final Vector3d pos = renderInfo.getPosition();
 
-		final ClippingHelper clippingHelper = new ClippingHelper(matrixStack.getLast().getMatrix(), projection);
-		clippingHelper.setCameraPosition(pos.x, pos.y, pos.z);
+		final ClippingHelper clippingHelper = new ClippingHelper(matrixStack.last().pose(), projection);
+		clippingHelper.prepare(pos.x, pos.y, pos.z);
 
-		AxisAlignedBB boxT = box.grow(0.08f);
+		AxisAlignedBB boxT = box.inflate(0.08f);
 
 		List<Line> lines = new ArrayList<>();
 		lines.add(new Line(new AxisAlignedBB(boxT.minX, boxT.minY, boxT.minZ, boxT.minX, boxT.minY, boxT.maxZ), pos, clippingHelper));
@@ -123,27 +123,27 @@ public class MeasurementBox {
 		final Vector3d lineX = lines.get(0).line.getCenter();
 		lines.clear();
 
-		matrixStack.push();
+		matrixStack.pushPose();
 		matrixStack.translate(-pos.x, -pos.y, -pos.z);
 
-		drawText(matrixStack, buffers, renderInfo, new Vector3d(lineX.x, lineX.y, lineX.z), String.valueOf(lengthX));
-		drawText(matrixStack, buffers, renderInfo, new Vector3d(lineY.x, lineY.y, lineY.z), String.valueOf(lengthY));
-		drawText(matrixStack, buffers, renderInfo, new Vector3d(lineZ.x, lineZ.y, lineZ.z), String.valueOf(lengthZ));
-		matrixStack.pop();
+		drawText(matrixStack, renderInfo, new Vector3d(lineX.x, lineX.y, lineX.z), String.valueOf(lengthX));
+		drawText(matrixStack, renderInfo, new Vector3d(lineY.x, lineY.y, lineY.z), String.valueOf(lengthY));
+		drawText(matrixStack, renderInfo, new Vector3d(lineZ.x, lineZ.y, lineZ.z), String.valueOf(lengthZ));
+		matrixStack.popPose();
 	}
 
-	private void drawText(MatrixStack matrixStack, RenderTypeBuffers buffers, ActiveRenderInfo renderInfo, Vector3d pos, String length) {
-		final FontRenderer font = Minecraft.getInstance().fontRenderer;
+	private void drawText(MatrixStack matrixStack, ActiveRenderInfo renderInfo, Vector3d pos, String length) {
+		final FontRenderer font = Minecraft.getInstance().font;
 
 		final float size = 0.02f;
 
-		matrixStack.push();
+		matrixStack.pushPose();
 		matrixStack.translate(pos.x, pos.y + size * 5.0, pos.z);
-		matrixStack.rotate(renderInfo.getRotation());
+		matrixStack.mulPose(renderInfo.rotation());
 		matrixStack.scale(-size, -size, -size);
-		matrixStack.translate(-font.getStringWidth(length) / 2f, 0, 0);
-		font.drawString(matrixStack, length, 0,0, this.color.getColorValue());
-		matrixStack.pop();
+		matrixStack.translate(-font.width(length) / 2f, 0, 0);
+		font.draw(matrixStack, length, 0,0, this.color.getColorValue());
+		matrixStack.popPose();
 	}
 
 	public boolean isFinished() {
@@ -155,13 +155,13 @@ public class MeasurementBox {
 	}
 
 	private static class Line implements Comparable<Line> {
-		AxisAlignedBB line;
-		boolean isVisible;
-		double distance;
+		private final AxisAlignedBB line;
+		private final boolean isVisible;
+		private final double distance;
 
 		Line(AxisAlignedBB line, Vector3d pos, ClippingHelper clippingHelper) {
 			this.line = line;
-			this.isVisible = clippingHelper.isBoundingBoxInFrustum(line);
+			this.isVisible = clippingHelper.isVisible(line);
 			this.distance = line.getCenter().distanceTo(pos);
 		}
 

@@ -13,14 +13,14 @@ public class LineRenderType extends RenderType {
 	}
 
 	public static RenderType lineRenderType(float lineWidth) {
-		return makeType("lines_no_depth",
+		return create("lines_no_depth",
 				DefaultVertexFormats.POSITION_COLOR, GL11.GL_LINES, 256,
-				RenderType.State.getBuilder()
-						.line(new LineState(OptionalDouble.of(lineWidth)))
-						.transparency(NO_TRANSPARENCY)
-						.texture(NO_TEXTURE)
-						.cull(CULL_DISABLED)
-						.depthTest(DEPTH_ALWAYS)
-						.build(false));
+				RenderType.State.builder()
+						.setLineState(new LineState(OptionalDouble.of(lineWidth)))
+						.setTransparencyState(NO_TRANSPARENCY)
+						.setTextureState(NO_TEXTURE)
+						.setCullState(NO_CULL)
+						.setDepthTestState(NO_DEPTH_TEST)
+						.createCompositeState(false));
 	}
 }

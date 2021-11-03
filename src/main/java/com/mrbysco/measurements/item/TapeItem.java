@@ -12,13 +12,13 @@ public class TapeItem extends Item {
 	}
 
 	@Override
-	public ActionResultType onItemUse(ItemUseContext context) {
+	public ActionResultType useOn(ItemUseContext context) {
 		PlayerEntity player = context.getPlayer();
 
-		if(player != null && !(player instanceof FakePlayer) && player.world.isRemote) {
-			return com.mrbysco.measurements.client.ClientHandler.addBox(player, context.func_242401_i());
+		if(player != null && !(player instanceof FakePlayer) && player.level.isClientSide) {
+			return com.mrbysco.measurements.client.ClientHandler.addBox(player, context.getHitResult());
 		}
 
-		return super.onItemUse(context);
+		return super.useOn(context);
 	}
 }

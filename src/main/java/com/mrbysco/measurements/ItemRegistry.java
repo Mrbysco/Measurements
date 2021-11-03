@@ -10,5 +10,5 @@ import net.minecraftforge.registries.ForgeRegistries;
 public class ItemRegistry {
 	public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, Measurements.MOD_ID);
 
-	public static final RegistryObject<Item> TAPE_MEASURE_ITEM  = ITEMS.register("tape_measure", () -> new TapeItem(new Item.Properties().group(ItemGroup.MISC)));
+	public static final RegistryObject<Item> TAPE_MEASURE_ITEM  = ITEMS.register("tape_measure", () -> new TapeItem(new Item.Properties().tab(ItemGroup.TAB_MISC)));
 }
