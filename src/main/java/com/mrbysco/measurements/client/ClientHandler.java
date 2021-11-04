@@ -29,19 +29,21 @@ public class ClientHandler {
 	public void onPlayerTick(PlayerTickEvent event) {
 		if(event.phase == TickEvent.Phase.END && event.player.level.isClientSide) {
 			PlayerEntity player = event.player;
-			if(player.getMainHandItem().getItem() != ItemRegistry.TAPE_MEASURE_ITEM.get()) {
-				clear();
-				return;
-			}
+			if(Minecraft.getInstance().player == player) {
+				if(player.getMainHandItem().getItem() != ItemRegistry.TAPE_MEASURE_ITEM.get()) {
+					clear();
+					return;
+				}
 
-			if(boxList.size() > 0) {
-				MeasurementBox lastBox = boxList.get(boxList.size() - 1);
-				if (!lastBox.isFinished()) {
-					RayTraceResult rayHit = Minecraft.getInstance().hitResult;
+				if(boxList.size() > 0) {
+					MeasurementBox lastBox = boxList.get(boxList.size() - 1);
+					if (!lastBox.isFinished()) {
+						RayTraceResult rayHit = Minecraft.getInstance().hitResult;
 
-					if (rayHit != null && rayHit.getType() == RayTraceResult.Type.BLOCK) {
-						BlockRayTraceResult blockHitResult = (BlockRayTraceResult) rayHit;
-						lastBox.setBlockEnd(new BlockPos(blockHitResult.getBlockPos()));
+						if (rayHit != null && rayHit.getType() == RayTraceResult.Type.BLOCK) {
+							BlockRayTraceResult blockHitResult = (BlockRayTraceResult) rayHit;
+							lastBox.setBlockEnd(new BlockPos(blockHitResult.getBlockPos()));
+						}
 					}
 				}
 			}
@@ -50,16 +52,18 @@ public class ClientHandler {
 
 	@SubscribeEvent
 	public void onRenderWorldLast(RenderWorldLastEvent event) {
-		ClientPlayerEntity player = Minecraft.getInstance().player;
+		final Minecraft minecraft = Minecraft.getInstance();
+		ClientPlayerEntity player = minecraft.player;
 		if(player == null || player.getMainHandItem().getItem() != ItemRegistry.TAPE_MEASURE_ITEM.get()) return;
 
-		final RegistryKey<World> currentDimension = player.level.dimension();
-		Minecraft minecraft = Minecraft.getInstance();
-		Matrix4f projectionMatrix = event.getProjectionMatrix();
-		MatrixStack matrixStack = event.getMatrixStack();
-		RenderTypeBuffers renderTypeBuffer = minecraft.renderBuffers();
-		ActiveRenderInfo camera = minecraft.gameRenderer.getMainCamera();
-		boxList.forEach(box -> box.render(currentDimension, matrixStack, renderTypeBuffer, camera, projectionMatrix));
+		if(!boxList.isEmpty()) {
+			final RegistryKey<World> currentDimension = player.level.dimension();
+			Matrix4f projectionMatrix = event.getProjectionMatrix();
+			MatrixStack matrixStack = event.getMatrixStack();
+			RenderTypeBuffers renderTypeBuffer = minecraft.renderBuffers();
+			ActiveRenderInfo camera = minecraft.gameRenderer.getMainCamera();
+			boxList.forEach(box -> box.render(currentDimension, matrixStack, renderTypeBuffer, camera, projectionMatrix));
+		}
 	}
 
 	public static ActionResultType addBox(PlayerEntity playerEntity, BlockRayTraceResult hitResult) {
