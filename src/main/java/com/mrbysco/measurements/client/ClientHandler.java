@@ -18,6 +18,7 @@ import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.TickEvent.PlayerTickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.LogicalSide;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,21 +28,23 @@ public class ClientHandler {
 
 	@SubscribeEvent
 	public void onPlayerTick(PlayerTickEvent event) {
-		if(event.phase == TickEvent.Phase.END && event.player.level.isClientSide) {
+		if(event.phase == TickEvent.Phase.END && event.side == LogicalSide.CLIENT) {
 			Player player = event.player;
-			if(player.getMainHandItem().getItem() != ItemRegistry.TAPE_MEASURE_ITEM.get()) {
-				clear();
-				return;
-			}
+			if(Minecraft.getInstance().player == player) {
+				if(player.getMainHandItem().getItem() != ItemRegistry.TAPE_MEASURE_ITEM.get()) {
+					clear();
+					return;
+				}
 
-			if(boxList.size() > 0) {
-				MeasurementBox lastBox = boxList.get(boxList.size() - 1);
-				if (!lastBox.isFinished()) {
-					HitResult rayHit = Minecraft.getInstance().hitResult;
+				if(boxList.size() > 0) {
+					MeasurementBox lastBox = boxList.get(boxList.size() - 1);
+					if (!lastBox.isFinished()) {
+						HitResult rayHit = Minecraft.getInstance().hitResult;
 
-					if (rayHit != null && rayHit.getType() == HitResult.Type.BLOCK) {
-						BlockHitResult blockHitResult = (BlockHitResult) rayHit;
-						lastBox.setBlockEnd(new BlockPos(blockHitResult.getBlockPos()));
+						if (rayHit != null && rayHit.getType() == HitResult.Type.BLOCK) {
+							BlockHitResult blockHitResult = (BlockHitResult) rayHit;
+							lastBox.setBlockEnd(new BlockPos(blockHitResult.getBlockPos()));
+						}
 					}
 				}
 			}
@@ -50,11 +53,11 @@ public class ClientHandler {
 
 	@SubscribeEvent
 	public void onRenderWorldLast(RenderWorldLastEvent event) {
-		LocalPlayer player = Minecraft.getInstance().player;
+		final Minecraft minecraft = Minecraft.getInstance();
+		LocalPlayer player = minecraft.player;
 		if(player == null || player.getMainHandItem().getItem() != ItemRegistry.TAPE_MEASURE_ITEM.get()) return;
 
 		final ResourceKey<Level> currentDimension = player.level.dimension();
-		Minecraft minecraft = Minecraft.getInstance();
 		Matrix4f projectionMatrix = event.getProjectionMatrix();
 		PoseStack poseStack = event.getMatrixStack();
 		RenderBuffers renderBuffers = minecraft.renderBuffers();
