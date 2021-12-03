@@ -14,7 +14,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
-import net.minecraftforge.client.event.RenderWorldLastEvent;
+import net.minecraftforge.client.event.RenderLevelLastEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.TickEvent.PlayerTickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -52,14 +52,14 @@ public class ClientHandler {
 	}
 
 	@SubscribeEvent
-	public void onRenderWorldLast(RenderWorldLastEvent event) {
+	public void onRenderWorldLast(RenderLevelLastEvent event) {
 		final Minecraft minecraft = Minecraft.getInstance();
 		LocalPlayer player = minecraft.player;
 		if(player == null || player.getMainHandItem().getItem() != ItemRegistry.TAPE_MEASURE_ITEM.get()) return;
 
 		final ResourceKey<Level> currentDimension = player.level.dimension();
 		Matrix4f projectionMatrix = event.getProjectionMatrix();
-		PoseStack poseStack = event.getMatrixStack();
+		PoseStack poseStack = event.getPoseStack();
 		RenderBuffers renderBuffers = minecraft.renderBuffers();
 		Camera camera = minecraft.gameRenderer.getMainCamera();
 		poseStack.pushPose();
