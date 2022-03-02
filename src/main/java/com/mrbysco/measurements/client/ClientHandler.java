@@ -28,15 +28,15 @@ public class ClientHandler {
 
 	@SubscribeEvent
 	public void onPlayerTick(PlayerTickEvent event) {
-		if(event.phase == TickEvent.Phase.END && event.side == LogicalSide.CLIENT) {
+		if (event.phase == TickEvent.Phase.END && event.side == LogicalSide.CLIENT) {
 			Player player = event.player;
-			if(Minecraft.getInstance().player == player) {
-				if(player.getMainHandItem().getItem() != ItemRegistry.TAPE_MEASURE_ITEM.get()) {
+			if (Minecraft.getInstance().player == player) {
+				if (player.getMainHandItem().getItem() != ItemRegistry.TAPE_MEASURE_ITEM.get()) {
 					clear();
 					return;
 				}
 
-				if(boxList.size() > 0) {
+				if (boxList.size() > 0) {
 					MeasurementBox lastBox = boxList.get(boxList.size() - 1);
 					if (!lastBox.isFinished()) {
 						HitResult rayHit = Minecraft.getInstance().hitResult;
@@ -55,7 +55,7 @@ public class ClientHandler {
 	public void onRenderWorldLast(RenderLevelLastEvent event) {
 		final Minecraft minecraft = Minecraft.getInstance();
 		LocalPlayer player = minecraft.player;
-		if(player == null || player.getMainHandItem().getItem() != ItemRegistry.TAPE_MEASURE_ITEM.get()) return;
+		if (player == null || player.getMainHandItem().getItem() != ItemRegistry.TAPE_MEASURE_ITEM.get()) return;
 
 		final ResourceKey<Level> currentDimension = player.level.dimension();
 		Matrix4f projectionMatrix = event.getProjectionMatrix();

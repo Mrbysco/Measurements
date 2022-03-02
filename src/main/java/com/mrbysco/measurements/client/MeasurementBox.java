@@ -148,7 +148,7 @@ public class MeasurementBox {
 		poseStack.mulPose(camera.rotation());
 		poseStack.scale(-size, -size, -size);
 		poseStack.translate(-font.width(length) / 2f, 0, 0);
-		font.draw(poseStack, length, 0,0, this.color.getTextColor());
+		font.draw(poseStack, length, 0, 0, this.color.getTextColor());
 		poseStack.popPose();
 	}
 

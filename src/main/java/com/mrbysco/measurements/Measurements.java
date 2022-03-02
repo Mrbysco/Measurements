@@ -11,16 +11,16 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 @Mod(Measurements.MOD_ID)
 public class Measurements {
-    public static final String MOD_ID = "measurements";
+	public static final String MOD_ID = "measurements";
 
-    public Measurements() {
-        IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
+	public Measurements() {
+		IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
-        ItemRegistry.ITEMS.register(eventBus);
+		ItemRegistry.ITEMS.register(eventBus);
 
-        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
-            MinecraftForge.EVENT_BUS.register(new ClientHandler());
-            MinecraftForge.EVENT_BUS.register(new LoginHandler());
-        });
-    }
+		DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
+			MinecraftForge.EVENT_BUS.register(new ClientHandler());
+			MinecraftForge.EVENT_BUS.register(new LoginHandler());
+		});
+	}
 }

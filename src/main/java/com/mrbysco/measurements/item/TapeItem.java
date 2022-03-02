@@ -15,7 +15,7 @@ public class TapeItem extends Item {
 	public InteractionResult useOn(UseOnContext context) {
 		Player player = context.getPlayer();
 
-		if(player != null && !(player instanceof FakePlayer) && player.level.isClientSide) {
+		if (player != null && !(player instanceof FakePlayer) && player.level.isClientSide) {
 			return com.mrbysco.measurements.client.ClientHandler.addBox(player, context.getHitResult());
 		}
 
