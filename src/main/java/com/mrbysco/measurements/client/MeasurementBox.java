@@ -17,6 +17,7 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -105,26 +106,26 @@ public class MeasurementBox {
 		AABB boxT = box.inflate(0.08f);
 
 		List<Line> lines = new ArrayList<>();
-		lines.add(new Line(new AABB(boxT.minX, boxT.minY, boxT.minZ, boxT.minX, boxT.minY, boxT.maxZ), pos, clippingHelper));
-		lines.add(new Line(new AABB(boxT.minX, boxT.maxY, boxT.minZ, boxT.minX, boxT.maxY, boxT.maxZ), pos, clippingHelper));
-		lines.add(new Line(new AABB(boxT.maxX, boxT.minY, boxT.minZ, boxT.maxX, boxT.minY, boxT.maxZ), pos, clippingHelper));
-		lines.add(new Line(new AABB(boxT.maxX, boxT.maxY, boxT.minZ, boxT.maxX, boxT.maxY, boxT.maxZ), pos, clippingHelper));
+		lines.add(Line.createLine(new AABB(boxT.minX, boxT.minY, boxT.minZ, boxT.minX, boxT.minY, boxT.maxZ), pos, clippingHelper));
+		lines.add(Line.createLine(new AABB(boxT.minX, boxT.maxY, boxT.minZ, boxT.minX, boxT.maxY, boxT.maxZ), pos, clippingHelper));
+		lines.add(Line.createLine(new AABB(boxT.maxX, boxT.minY, boxT.minZ, boxT.maxX, boxT.minY, boxT.maxZ), pos, clippingHelper));
+		lines.add(Line.createLine(new AABB(boxT.maxX, boxT.maxY, boxT.minZ, boxT.maxX, boxT.maxY, boxT.maxZ), pos, clippingHelper));
 		Collections.sort(lines);
 		final Vec3 lineZ = lines.get(0).line.getCenter();
 
 		lines.clear();
-		lines.add(new Line(new AABB(boxT.minX, boxT.minY, boxT.minZ, boxT.minX, boxT.maxY, boxT.minZ), pos, clippingHelper));
-		lines.add(new Line(new AABB(boxT.minX, boxT.minY, boxT.maxZ, boxT.minX, boxT.maxY, boxT.maxZ), pos, clippingHelper));
-		lines.add(new Line(new AABB(boxT.maxX, boxT.minY, boxT.minZ, boxT.maxX, boxT.maxY, boxT.minZ), pos, clippingHelper));
-		lines.add(new Line(new AABB(boxT.maxX, boxT.minY, boxT.maxZ, boxT.maxX, boxT.maxY, boxT.maxZ), pos, clippingHelper));
+		lines.add(Line.createLine(new AABB(boxT.minX, boxT.minY, boxT.minZ, boxT.minX, boxT.maxY, boxT.minZ), pos, clippingHelper));
+		lines.add(Line.createLine(new AABB(boxT.minX, boxT.minY, boxT.maxZ, boxT.minX, boxT.maxY, boxT.maxZ), pos, clippingHelper));
+		lines.add(Line.createLine(new AABB(boxT.maxX, boxT.minY, boxT.minZ, boxT.maxX, boxT.maxY, boxT.minZ), pos, clippingHelper));
+		lines.add(Line.createLine(new AABB(boxT.maxX, boxT.minY, boxT.maxZ, boxT.maxX, boxT.maxY, boxT.maxZ), pos, clippingHelper));
 		Collections.sort(lines);
 		final Vec3 lineY = lines.get(0).line.getCenter();
 
 		lines.clear();
-		lines.add(new Line(new AABB(boxT.minX, boxT.minY, boxT.minZ, boxT.maxX, boxT.minY, boxT.minZ), pos, clippingHelper));
-		lines.add(new Line(new AABB(boxT.minX, boxT.minY, boxT.maxZ, boxT.maxX, boxT.minY, boxT.maxZ), pos, clippingHelper));
-		lines.add(new Line(new AABB(boxT.minX, boxT.maxY, boxT.minZ, boxT.maxX, boxT.maxY, boxT.minZ), pos, clippingHelper));
-		lines.add(new Line(new AABB(boxT.minX, boxT.maxY, boxT.maxZ, boxT.maxX, boxT.maxY, boxT.maxZ), pos, clippingHelper));
+		lines.add(Line.createLine(new AABB(boxT.minX, boxT.minY, boxT.minZ, boxT.maxX, boxT.minY, boxT.minZ), pos, clippingHelper));
+		lines.add(Line.createLine(new AABB(boxT.minX, boxT.minY, boxT.maxZ, boxT.maxX, boxT.minY, boxT.maxZ), pos, clippingHelper));
+		lines.add(Line.createLine(new AABB(boxT.minX, boxT.maxY, boxT.minZ, boxT.maxX, boxT.maxY, boxT.minZ), pos, clippingHelper));
+		lines.add(Line.createLine(new AABB(boxT.minX, boxT.maxY, boxT.maxZ, boxT.maxX, boxT.maxY, boxT.maxZ), pos, clippingHelper));
 		Collections.sort(lines);
 		final Vec3 lineX = lines.get(0).line.getCenter();
 		lines.clear();
@@ -160,19 +161,14 @@ public class MeasurementBox {
 		this.finished = true;
 	}
 
-	private static class Line implements Comparable<Line> {
-		AABB line;
-		boolean isVisible;
-		double distance;
+	private record Line(AABB line, boolean isVisible, double distance) implements Comparable<Line> {
 
-		Line(AABB line, Vec3 pos, Frustum clippingHelper) {
-			this.line = line;
-			this.isVisible = clippingHelper.isVisible(line);
-			this.distance = line.getCenter().distanceTo(pos);
+		public static Line createLine(AABB line, Vec3 pos, Frustum clippingHelper) {
+			return new Line(line, clippingHelper.isVisible(line), line.getCenter().distanceTo(pos));
 		}
 
 		@Override
-		public int compareTo(Line l) {
+		public int compareTo(@NotNull Line l) {
 			if (isVisible) {
 				return l.isVisible ? Double.compare(distance, l.distance) : -1;
 			} else {
