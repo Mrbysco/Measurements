@@ -12,3 +12,9 @@ authors="Mrbysco"
 description='''
 Measure the distance between positions :)
 '''
+[[dependencies.measurements]]
+modId="forge"
+mandatory=true
+versionRange="[41.0.94,)"
+ordering="NONE"
+side="BOTH"
