@@ -1,3 +1,5 @@
+[![build](https://github.com/Mrbysco/Measurements/actions/workflows/build.yml/badge.svg)](https://github.com/Mrbysco/Measurements/actions/workflows/build.yml) 
+[![](http://cf.way2muchnoise.eu/versions/478559.svg)](https://www.curseforge.com/minecraft/mc-mods/measurements)
 # Measurements #
 
 ## About ##

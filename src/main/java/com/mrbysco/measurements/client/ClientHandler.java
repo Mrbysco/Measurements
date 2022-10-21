@@ -9,12 +9,13 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.RenderBuffers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
-import net.minecraftforge.client.event.RenderLevelLastEvent;
+import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.TickEvent.PlayerTickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -24,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ClientHandler {
+	protected static final RandomSource random = RandomSource.create();
 	private static final List<MeasurementBox> boxList = new ArrayList<>();
 
 	@SubscribeEvent
@@ -31,7 +33,7 @@ public class ClientHandler {
 		if (event.phase == TickEvent.Phase.END && event.side == LogicalSide.CLIENT) {
 			Player player = event.player;
 			if (Minecraft.getInstance().player == player) {
-				if (player.getMainHandItem().getItem() != ItemRegistry.TAPE_MEASURE_ITEM.get()) {
+				if (!player.isHolding(ItemRegistry.TAPE_MEASURE_ITEM.get())) {
 					clear();
 					return;
 				}
@@ -52,19 +54,21 @@ public class ClientHandler {
 	}
 
 	@SubscribeEvent
-	public void onRenderWorldLast(RenderLevelLastEvent event) {
-		final Minecraft minecraft = Minecraft.getInstance();
-		LocalPlayer player = minecraft.player;
-		if (player == null || player.getMainHandItem().getItem() != ItemRegistry.TAPE_MEASURE_ITEM.get()) return;
+	public void onRenderWorldLast(RenderLevelStageEvent event) {
+		if (event.getStage() == RenderLevelStageEvent.Stage.AFTER_TRANSLUCENT_BLOCKS) {
+			final Minecraft minecraft = Minecraft.getInstance();
+			LocalPlayer player = minecraft.player;
+			if (player == null || !player.isHolding(ItemRegistry.TAPE_MEASURE_ITEM.get())) return;
 
-		final ResourceKey<Level> currentDimension = player.level.dimension();
-		Matrix4f projectionMatrix = event.getProjectionMatrix();
-		PoseStack poseStack = event.getPoseStack();
-		RenderBuffers renderBuffers = minecraft.renderBuffers();
-		Camera camera = minecraft.gameRenderer.getMainCamera();
-		poseStack.pushPose();
-		boxList.forEach(box -> box.render(currentDimension, poseStack, renderBuffers, camera, projectionMatrix));
-		poseStack.popPose();
+			final ResourceKey<Level> currentDimension = player.level.dimension();
+			Matrix4f projectionMatrix = event.getProjectionMatrix();
+			PoseStack poseStack = event.getPoseStack();
+			RenderBuffers renderBuffers = minecraft.renderBuffers();
+			Camera camera = minecraft.gameRenderer.getMainCamera();
+			poseStack.pushPose();
+			boxList.forEach(box -> box.render(currentDimension, poseStack, renderBuffers, camera, projectionMatrix));
+			poseStack.popPose();
+		}
 	}
 
 	public static InteractionResult addBox(Player playerEntity, BlockPos pos) {
