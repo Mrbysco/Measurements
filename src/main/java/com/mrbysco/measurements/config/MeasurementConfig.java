@@ -10,10 +10,10 @@ public class MeasurementConfig {
 	public static class Client {
 
 		public final ForgeConfigSpec.DoubleValue lineWidth;
-		public final ForgeConfigSpec.IntValue lineFarWidth;
+		public final ForgeConfigSpec.IntValue lineWidthMax;
 		public final ForgeConfigSpec.DoubleValue textSize;
-		public final ForgeConfigSpec.EnumValue lineColor;
-		public final ForgeConfigSpec.EnumValue textColor;
+		public final ForgeConfigSpec.EnumValue<LineColor> lineColor;
+		public final ForgeConfigSpec.EnumValue<TextColor> textColor;
 
 		Client(ForgeConfigSpec.Builder builder) {
 			builder.comment("Client settings")
@@ -31,7 +31,7 @@ public class MeasurementConfig {
 			lineWidth = builder
 					.comment("Set line width (thickness). [Default: 2]")
 					.defineInRange("lineWidth", 2.0D, 1, 16);
-			lineFarWidth = builder
+			lineWidthMax = builder
 					.comment("Set line width when further away (thickness). [Default: 2]")
 					.defineInRange("lineWidthMax", 2, 1, 16);
 
