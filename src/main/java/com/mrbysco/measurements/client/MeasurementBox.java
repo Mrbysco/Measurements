@@ -91,7 +91,7 @@ public class MeasurementBox {
 		double distance = box.getCenter().distanceTo(pos);
 		float lineWidth = MeasurementConfig.CLIENT.lineWidth.get().floatValue();
 		if (distance > 48) {
-			lineWidth = MeasurementConfig.CLIENT.lineFarWidth.get();
+			lineWidth = MeasurementConfig.CLIENT.lineWidthMax.get();
 		}
 
 		MultiBufferSource.BufferSource bufferSource = renderBuffers.bufferSource();
