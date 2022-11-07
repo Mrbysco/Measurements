@@ -22,8 +22,10 @@ import net.minecraftforge.fml.LogicalSide;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class ClientHandler {
+	protected static final Random random = new Random();
 	private static final List<MeasurementBox> boxList = new ArrayList<>();
 
 	@SubscribeEvent
@@ -31,7 +33,7 @@ public class ClientHandler {
 		if (event.phase == TickEvent.Phase.END && event.side == LogicalSide.CLIENT) {
 			Player player = event.player;
 			if (Minecraft.getInstance().player == player) {
-				if (player.getMainHandItem().getItem() != ItemRegistry.TAPE_MEASURE_ITEM.get()) {
+				if (!player.isHolding(ItemRegistry.TAPE_MEASURE_ITEM.get())) {
 					clear();
 					return;
 				}
@@ -55,7 +57,7 @@ public class ClientHandler {
 	public void onRenderWorldLast(RenderLevelLastEvent event) {
 		final Minecraft minecraft = Minecraft.getInstance();
 		LocalPlayer player = minecraft.player;
-		if (player == null || player.getMainHandItem().getItem() != ItemRegistry.TAPE_MEASURE_ITEM.get()) return;
+		if (player == null || !player.isHolding(ItemRegistry.TAPE_MEASURE_ITEM.get())) return;
 
 		final ResourceKey<Level> currentDimension = player.level.dimension();
 		Matrix4f projectionMatrix = event.getProjectionMatrix();

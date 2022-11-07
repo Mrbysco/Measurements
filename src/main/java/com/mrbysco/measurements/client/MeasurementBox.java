@@ -3,6 +3,9 @@ package com.mrbysco.measurements.client;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Matrix4f;
+import com.mrbysco.measurements.config.LineColor;
+import com.mrbysco.measurements.config.MeasurementConfig;
+import com.mrbysco.measurements.config.TextColor;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -12,6 +15,7 @@ import net.minecraft.client.renderer.RenderBuffers;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.Level;
@@ -29,7 +33,10 @@ public class MeasurementBox {
 	public AABB box;
 	private final ResourceKey<Level> dimensionKey;
 	private boolean finished;
-	private final DyeColor color;
+	private final DyeColor lineColor;
+	private final DyeColor textX;
+	private final DyeColor textY;
+	private final DyeColor textZ;
 
 	MeasurementBox(BlockPos block, ResourceKey<Level> dimensionKey) {
 		this.startPos = block;
@@ -37,7 +44,18 @@ public class MeasurementBox {
 		this.dimensionKey = dimensionKey;
 		this.finished = false;
 
-		this.color = DyeColor.YELLOW;
+		this.lineColor = ((LineColor) MeasurementConfig.CLIENT.lineColor.get()).getColor(ClientHandler.random);
+		TextColor textColor = ((TextColor) MeasurementConfig.CLIENT.textColor.get());
+		if (textColor == TextColor.XYZRGB) {
+			this.textX = ((TextColor) MeasurementConfig.CLIENT.textColor.get()).getColor(ClientHandler.random, Direction.Axis.X);
+			this.textY = ((TextColor) MeasurementConfig.CLIENT.textColor.get()).getColor(ClientHandler.random, Direction.Axis.Y);
+			this.textZ = ((TextColor) MeasurementConfig.CLIENT.textColor.get()).getColor(ClientHandler.random, Direction.Axis.Z);
+		} else {
+			DyeColor color = textColor.getColor(ClientHandler.random, null);
+			this.textX = color;
+			this.textY = color;
+			this.textZ = color;
+		}
 
 		this.setBoundingBox();
 	}
@@ -62,7 +80,7 @@ public class MeasurementBox {
 	public void render(ResourceKey<Level> currentDimensionKey, PoseStack poseStack, RenderBuffers renderBuffers, Camera camera, Matrix4f projection) {
 		if (!dimensionKey.location().equals(currentDimensionKey.location())) return;
 
-		final float[] color = this.color.getTextureDiffuseColors();
+		final float[] color = this.lineColor.getTextureDiffuseColors();
 		final float r = color[0];
 		final float g = color[1];
 		final float b = color[2];
@@ -71,9 +89,9 @@ public class MeasurementBox {
 		Vec3 pos = camera.getPosition();
 
 		double distance = box.getCenter().distanceTo(pos);
-		float lineWidth = 2f;
+		float lineWidth = MeasurementConfig.CLIENT.lineWidth.get().floatValue();
 		if (distance > 48) {
-			lineWidth = 1.0f;
+			lineWidth = MeasurementConfig.CLIENT.lineFarWidth.get();
 		}
 
 		MultiBufferSource.BufferSource bufferSource = renderBuffers.bufferSource();
@@ -132,23 +150,22 @@ public class MeasurementBox {
 		poseStack.pushPose();
 		poseStack.translate(-pos.x, -pos.y, -pos.z);
 
-		drawText(poseStack, camera, new Vec3(lineX.x, lineX.y, lineX.z), String.valueOf(lengthX));
-		drawText(poseStack, camera, new Vec3(lineY.x, lineY.y, lineY.z), String.valueOf(lengthY));
-		drawText(poseStack, camera, new Vec3(lineZ.x, lineZ.y, lineZ.z), String.valueOf(lengthZ));
+		drawText(poseStack, camera, new Vec3(lineX.x, lineX.y, lineX.z), String.valueOf(lengthX), this.textX);
+		drawText(poseStack, camera, new Vec3(lineY.x, lineY.y, lineY.z), String.valueOf(lengthY), this.textY);
+		drawText(poseStack, camera, new Vec3(lineZ.x, lineZ.y, lineZ.z), String.valueOf(lengthZ), this.textZ);
 		poseStack.popPose();
 	}
 
-	private void drawText(PoseStack poseStack, Camera camera, Vec3 pos, String length) {
+	private void drawText(PoseStack poseStack, Camera camera, Vec3 pos, String length, DyeColor textColor) {
 		final Font font = Minecraft.getInstance().font;
-
-		final float size = 0.02f;
+		final float size = MeasurementConfig.CLIENT.textSize.get().floatValue();
 
 		poseStack.pushPose();
 		poseStack.translate(pos.x, pos.y + size * 5.0, pos.z);
 		poseStack.mulPose(camera.rotation());
 		poseStack.scale(-size, -size, -size);
 		poseStack.translate(-font.width(length) / 2f, 0, 0);
-		font.draw(poseStack, length, 0, 0, this.color.getTextColor());
+		font.draw(poseStack, length, 0, 0, textColor.getTextColor());
 		poseStack.popPose();
 	}
 
