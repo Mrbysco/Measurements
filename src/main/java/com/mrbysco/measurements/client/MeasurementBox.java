@@ -2,7 +2,6 @@ package com.mrbysco.measurements.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Matrix4f;
 import com.mrbysco.measurements.config.LineColor;
 import com.mrbysco.measurements.config.MeasurementConfig;
 import com.mrbysco.measurements.config.TextColor;
@@ -22,6 +21,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
+import org.joml.Matrix4f;
 
 import java.util.ArrayList;
 import java.util.Collections;
