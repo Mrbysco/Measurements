@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "id": "measurements",
+  "version": "${version}",
+  "name": "Measurements",
+  "description": "Measure the distance between positions :)",
+  "authors": [
+    "Mrbysco"
+  ],
+  "contact": {
+    "homepage": "https://www.curseforge.com/minecraft/mc-mods/measurements",
+    "sources": "https://github.com/Mrbysco/measurements",
+    "issues": "https://github.com/Mrbysco/measurements/issues"
+  },
+  "license": "MIT",
+  "icon": "icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "com.mrbysco.measurements.MeasurementsFabric"
+    ],
+    "client": [
+      "com.mrbysco.measurements.ClientMeasurementsFabric"
+    ],
+    "modmenu": [
+      "com.mrbysco.measurements.config.MeasurementsModMenuIntegration"
+    ]
+  },
+  "mixins": [
+    "measurements.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.14",
+    "fabric": "*",
+    "minecraft": "1.18.x",
+    "java": ">=17",
+    "cloth-config": ">=6.2.57"
+  },
+  "suggests": {
+    "another-mod": "*"
+  },
+  "accessWidener": "measurements.accesswidener"
+}
+
