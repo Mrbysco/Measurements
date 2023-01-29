@@ -1,11 +1,15 @@
 package com.mrbysco.measurements;
 
-import com.mrbysco.measurements.client.ClientHandler;
 import com.mrbysco.measurements.client.ClientClass;
+import com.mrbysco.measurements.client.ClientHandler;
 import com.mrbysco.measurements.config.MeasurementConfigForge;
+import com.mrbysco.measurements.registration.MeasurementRegistry;
+import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.CreativeModeTabEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
@@ -22,9 +26,18 @@ public class MeasurementsForge {
 
 		CommonClass.init();
 
+		eventBus.addListener(this::addTabContents);
+
 		DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
 			MinecraftForge.EVENT_BUS.register(new ClientHandler());
 			MinecraftForge.EVENT_BUS.register(new ClientClass());
 		});
+	}
+
+	@SubscribeEvent
+	public void addTabContents(final CreativeModeTabEvent.BuildContents event) {
+		if (event.getTab() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
+			event.accept(MeasurementRegistry.TAPE_MEASURE_ITEM.get());
+		}
 	}
 }

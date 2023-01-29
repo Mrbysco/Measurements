@@ -1,5 +1,5 @@
 modLoader="javafml"
-loaderVersion="[41,)"
+loaderVersion="[44,)"
 issueTrackerURL="https://github.com/Mrbysco/measurements/issues"
 license="MIT"
 
@@ -15,6 +15,6 @@ Measure the distance between positions :)
 [[dependencies.measurements]]
 modId="forge"
 mandatory=true
-versionRange="[41.0.94,)"
+versionRange="[44.1.0,)"
 ordering="NONE"
 side="BOTH"

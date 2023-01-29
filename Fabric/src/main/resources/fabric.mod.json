@@ -32,9 +32,9 @@
   "depends": {
     "fabricloader": ">=0.14",
     "fabric": "*",
-    "minecraft": "1.19.x",
+    "minecraft": ">=1.19.3",
     "java": ">=17",
-    "cloth-config": ">=8.2.88"
+    "cloth-config": ">=9.0.94"
   },
   "suggests": {
     "another-mod": "*"
