@@ -5,12 +5,12 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public class LoginHandler {
 	@SubscribeEvent
-	public void onLogIn(ClientPlayerNetworkEvent.LoggedInEvent event) {
+	public void onLogIn(ClientPlayerNetworkEvent.LoggingIn event) {
 		ClientClass.onLogIn();
 	}
 
 	@SubscribeEvent
-	public void onLogOut(ClientPlayerNetworkEvent.LoggedOutEvent event) {
+	public void onLogOut(ClientPlayerNetworkEvent.LoggingOut event) {
 		ClientClass.onLogOut();
 	}
 }

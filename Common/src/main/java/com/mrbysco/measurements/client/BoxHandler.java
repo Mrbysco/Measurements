@@ -13,26 +13,24 @@ public class BoxHandler {
 	protected static final Random random = new Random();
 	private static final List<MeasurementBox> boxList = new ArrayList<>();
 
-	public static InteractionResult addBox(Player playerEntity, BlockHitResult hitResult) {
+	public static InteractionResult addBox(Player playerEntity, BlockPos blockPos) {
 		if (playerEntity.isShiftKeyDown()) {
 			undo();
-			return InteractionResult.FAIL;
+			return InteractionResult.SUCCESS;
 		}
-
-		BlockPos block = hitResult.getBlockPos();
 
 		if (boxList.size() > 0) {
 			MeasurementBox lastBox = boxList.get(boxList.size() - 1);
 
 			if (lastBox.isFinished()) {
-				final MeasurementBox box = new MeasurementBox(block, playerEntity.level.dimension());
+				final MeasurementBox box = new MeasurementBox(blockPos, playerEntity.level.dimension());
 				boxList.add(box);
 			} else {
-				lastBox.setBlockEnd(block);
+				lastBox.setBlockEnd(blockPos);
 				lastBox.setFinished();
 			}
 		} else {
-			final MeasurementBox box = new MeasurementBox(block, playerEntity.level.dimension());
+			final MeasurementBox box = new MeasurementBox(blockPos, playerEntity.level.dimension());
 			boxList.add(box);
 		}
 

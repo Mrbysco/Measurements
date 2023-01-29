@@ -3,8 +3,6 @@ package com.mrbysco.measurements.platform.services;
 import com.mrbysco.measurements.config.LineColor;
 import com.mrbysco.measurements.config.TextColor;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.context.UseOnContext;
-import net.minecraft.world.phys.BlockHitResult;
 
 public interface IPlatformHelper {
 
@@ -14,13 +12,6 @@ public interface IPlatformHelper {
 	 * @return If it's a valid user
 	 */
 	boolean isValidUser(Player player);
-
-	/**
-	 * Get's the BlockHitResult from the context because it's private on common
-	 *
-	 * @return the hitResult
-	 */
-	BlockHitResult getHitResult(UseOnContext context);
 
 	/**
 	 * Gets the linecolor specified in the config

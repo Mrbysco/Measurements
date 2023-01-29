@@ -16,7 +16,7 @@ public class TapeItem extends Item {
 		Player player = context.getPlayer();
 
 		if (Services.PLATFORM.isValidUser(player)) {
-			return com.mrbysco.measurements.client.BoxHandler.addBox(player, Services.PLATFORM.getHitResult(context));
+			return com.mrbysco.measurements.client.BoxHandler.addBox(player, context.getClickedPos());
 		}
 
 		return super.useOn(context);

@@ -5,8 +5,6 @@ import com.mrbysco.measurements.config.MeasurementConfigForge;
 import com.mrbysco.measurements.config.TextColor;
 import com.mrbysco.measurements.platform.services.IPlatformHelper;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.context.UseOnContext;
-import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.common.util.FakePlayer;
 
 public class ForgePlatformHelper implements IPlatformHelper {
@@ -14,11 +12,6 @@ public class ForgePlatformHelper implements IPlatformHelper {
     @Override
     public boolean isValidUser(Player player) {
         return player != null && !(player instanceof FakePlayer) && player.level.isClientSide;
-    }
-
-    @Override
-    public BlockHitResult getHitResult(UseOnContext context) {
-        return context.getHitResult();
     }
 
     @Override
