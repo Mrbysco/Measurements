@@ -1,6 +1,5 @@
 [![build](https://github.com/Mrbysco/measurements/actions/workflows/build.yml/badge.svg)](https://github.com/Mrbysco/measurements/actions/workflows/build.yml)
 [![](http://cf.way2muchnoise.eu/versions/478559.svg)](https://www.curseforge.com/minecraft/mc-mods/measurements)
-[![](https://modrinth-utils.vercel.app/api/badge/versions?id=wLINU2AB)](https://modrinth.com/mod/measurements)
 
 # Measurements #
 
