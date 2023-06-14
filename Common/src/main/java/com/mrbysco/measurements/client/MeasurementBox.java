@@ -15,6 +15,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.Level;
@@ -108,10 +109,10 @@ public class MeasurementBox {
 		poseStack.popPose();
 
 		//Render the line length text
-		drawLength(poseStack, camera, projection);
+		drawLength(poseStack, camera, projection, bufferSource);
 	}
 
-	private void drawLength(PoseStack poseStack, Camera camera, Matrix4f projection) {
+	private void drawLength(PoseStack poseStack, Camera camera, Matrix4f projection, MultiBufferSource.BufferSource bufferSource) {
 		final int lengthX = (int) box.getXsize();
 		final int lengthY = (int) box.getYsize();
 		final int lengthZ = (int) box.getZsize();
@@ -151,13 +152,13 @@ public class MeasurementBox {
 		poseStack.pushPose();
 		poseStack.translate(-pos.x, -pos.y, -pos.z);
 
-		drawText(poseStack, camera, new Vec3(lineX.x, lineX.y, lineX.z), String.valueOf(lengthX), this.textX);
-		drawText(poseStack, camera, new Vec3(lineY.x, lineY.y, lineY.z), String.valueOf(lengthY), this.textY);
-		drawText(poseStack, camera, new Vec3(lineZ.x, lineZ.y, lineZ.z), String.valueOf(lengthZ), this.textZ);
+		drawText(poseStack, camera, new Vec3(lineX.x, lineX.y, lineX.z), Component.literal(String.valueOf(lengthX)), this.textX, bufferSource);
+		drawText(poseStack, camera, new Vec3(lineY.x, lineY.y, lineY.z), Component.literal(String.valueOf(lengthY)), this.textY, bufferSource);
+		drawText(poseStack, camera, new Vec3(lineZ.x, lineZ.y, lineZ.z), Component.literal(String.valueOf(lengthZ)), this.textZ, bufferSource);
 		poseStack.popPose();
 	}
 
-	private void drawText(PoseStack poseStack, Camera camera, Vec3 pos, String length, DyeColor textColor) {
+	private void drawText(PoseStack poseStack, Camera camera, Vec3 pos, Component length, DyeColor textColor, MultiBufferSource.BufferSource bufferSource) {
 		final Font font = Minecraft.getInstance().font;
 		final float size = Services.PLATFORM.getTextSize();
 
@@ -166,7 +167,8 @@ public class MeasurementBox {
 		poseStack.mulPose(camera.rotation());
 		poseStack.scale(-size, -size, -size);
 		poseStack.translate(-font.width(length) / 2f, 0, 0);
-		font.draw(poseStack, length, 0, 0, textColor.getTextColor());
+		Matrix4f pose = poseStack.last().pose();
+		font.drawInBatch(length, 0F, 0F, textColor.getTextColor(), false, pose, bufferSource, Font.DisplayMode.NORMAL, 0, 15728880);
 		poseStack.popPose();
 	}
 

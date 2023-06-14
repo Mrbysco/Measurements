@@ -49,7 +49,7 @@ public class ClientClass {
 	public static void onRenderWorldLast(Player player, Matrix4f projectionMatrix, PoseStack poseStack, RenderBuffers renderBuffers, Camera camera) {
 		if (player == null || !player.isHolding(MeasurementRegistry.TAPE_MEASURE_ITEM.get())) return;
 
-		final ResourceKey<Level> currentDimension = player.level.dimension();
+		final ResourceKey<Level> currentDimension = player.level().dimension();
 		poseStack.pushPose();
 		List<MeasurementBox> boxList = BoxHandler.getBoxList();
 		boxList.forEach(box -> box.render(currentDimension, poseStack, renderBuffers, camera, projectionMatrix));

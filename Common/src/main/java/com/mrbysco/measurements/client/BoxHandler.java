@@ -22,14 +22,14 @@ public class BoxHandler {
 			MeasurementBox lastBox = boxList.get(boxList.size() - 1);
 
 			if (lastBox.isFinished()) {
-				final MeasurementBox box = new MeasurementBox(blockPos, playerEntity.level.dimension());
+				final MeasurementBox box = new MeasurementBox(blockPos, playerEntity.level().dimension());
 				boxList.add(box);
 			} else {
 				lastBox.setBlockEnd(blockPos);
 				lastBox.setFinished();
 			}
 		} else {
-			final MeasurementBox box = new MeasurementBox(blockPos, playerEntity.level.dimension());
+			final MeasurementBox box = new MeasurementBox(blockPos, playerEntity.level().dimension());
 			boxList.add(box);
 		}
 

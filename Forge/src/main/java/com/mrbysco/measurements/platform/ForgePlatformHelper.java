@@ -11,7 +11,7 @@ public class ForgePlatformHelper implements IPlatformHelper {
 
 	@Override
 	public boolean isValidUser(Player player) {
-		return player != null && !(player instanceof FakePlayer) && player.level.isClientSide;
+		return player != null && !(player instanceof FakePlayer) && player.level().isClientSide;
 	}
 
 	@Override

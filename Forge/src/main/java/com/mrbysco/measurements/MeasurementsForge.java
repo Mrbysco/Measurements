@@ -7,7 +7,7 @@ import com.mrbysco.measurements.registration.MeasurementRegistry;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.CreativeModeTabEvent;
+import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
@@ -35,8 +35,8 @@ public class MeasurementsForge {
 	}
 
 	@SubscribeEvent
-	public void addTabContents(final CreativeModeTabEvent.BuildContents event) {
-		if (event.getTab() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
+	public void addTabContents(final BuildCreativeModeTabContentsEvent event) {
+		if (event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
 			event.accept(MeasurementRegistry.TAPE_MEASURE_ITEM.get());
 		}
 	}
