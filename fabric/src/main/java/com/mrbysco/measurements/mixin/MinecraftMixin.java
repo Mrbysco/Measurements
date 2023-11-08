@@ -11,12 +11,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(Minecraft.class)
 public class MinecraftMixin {
 
-	@Inject(method = "clearLevel(Lnet/minecraft/client/gui/screens/Screen;)V", at = @At(
+	@Inject(method = "disconnect(Lnet/minecraft/client/gui/screens/Screen;)V", at = @At(
 			value = "INVOKE",
 			target = "Lnet/minecraft/client/renderer/GameRenderer;resetData()V",
 			shift = At.Shift.AFTER,
 			ordinal = 0))
-	public void clearLevel(Screen screen, CallbackInfo ci) {
+	public void measurements$disconnect(Screen screen, CallbackInfo ci) {
 		ClientClass.onLogOut();
 	}
 }

@@ -1,7 +1,7 @@
 package com.mrbysco.measurements.client;
 
-import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
 
 public class LoginHandler {
 	@SubscribeEvent

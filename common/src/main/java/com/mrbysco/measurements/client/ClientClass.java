@@ -32,7 +32,7 @@ public class ClientClass {
 			}
 
 			List<MeasurementBox> boxList = BoxHandler.getBoxList();
-			if (boxList.size() > 0) {
+			if (!boxList.isEmpty()) {
 				MeasurementBox lastBox = boxList.get(boxList.size() - 1);
 				if (!lastBox.isFinished()) {
 					HitResult rayHit = Minecraft.getInstance().hitResult;

@@ -37,7 +37,7 @@ public enum TextColor {
 	 *
 	 * @param random the RandomSource used to generate a random color if RANDOM is selected
 	 * @param axis   the axis used when XYZRGB is used
-	 * @return
+	 * @return the color
 	 */
 	public DyeColor getColor(Random random, @Nullable Direction.Axis axis) {
 		if (this == RANDOM) {

@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(Player.class)
 public class PlayerMixin {
 	@Inject(method = "tick", at = @At("RETURN"))
-	private void postTick(CallbackInfo ci) {
+	private void measurements$tick(CallbackInfo ci) {
 		PlayerTickCallback.EVENT.invoker().tick((Player) (Object) this);
 	}
 }

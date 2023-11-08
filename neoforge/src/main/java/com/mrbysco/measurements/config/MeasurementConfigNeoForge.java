@@ -1,21 +1,21 @@
 package com.mrbysco.measurements.config;
 
 import com.mrbysco.measurements.Constants;
-import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.event.config.ModConfigEvent;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.event.config.ModConfigEvent;
+import net.neoforged.neoforge.common.ModConfigSpec;
 import org.apache.commons.lang3.tuple.Pair;
 
-public class MeasurementConfigForge {
+public class MeasurementConfigNeoForge {
 	public static class Client {
 
-		public final ForgeConfigSpec.DoubleValue lineWidth;
-		public final ForgeConfigSpec.IntValue lineWidthMax;
-		public final ForgeConfigSpec.DoubleValue textSize;
-		public final ForgeConfigSpec.EnumValue<LineColor> lineColor;
-		public final ForgeConfigSpec.EnumValue<TextColor> textColor;
+		public final ModConfigSpec.DoubleValue lineWidth;
+		public final ModConfigSpec.IntValue lineWidthMax;
+		public final ModConfigSpec.DoubleValue textSize;
+		public final ModConfigSpec.EnumValue<LineColor> lineColor;
+		public final ModConfigSpec.EnumValue<TextColor> textColor;
 
-		Client(ForgeConfigSpec.Builder builder) {
+		Client(ModConfigSpec.Builder builder) {
 			builder.comment("Client settings")
 					.push("client");
 
@@ -39,11 +39,11 @@ public class MeasurementConfigForge {
 		}
 	}
 
-	public static final ForgeConfigSpec clientSpec;
+	public static final ModConfigSpec clientSpec;
 	public static final Client CLIENT;
 
 	static {
-		final Pair<Client, ForgeConfigSpec> specPair = new ForgeConfigSpec.Builder().configure(Client::new);
+		final Pair<Client, ModConfigSpec> specPair = new ModConfigSpec.Builder().configure(Client::new);
 		clientSpec = specPair.getRight();
 		CLIENT = specPair.getLeft();
 	}

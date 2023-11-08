@@ -1,13 +1,13 @@
 package com.mrbysco.measurements.platform;
 
 import com.mrbysco.measurements.config.LineColor;
-import com.mrbysco.measurements.config.MeasurementConfigForge;
+import com.mrbysco.measurements.config.MeasurementConfigNeoForge;
 import com.mrbysco.measurements.config.TextColor;
 import com.mrbysco.measurements.platform.services.IPlatformHelper;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.common.util.FakePlayer;
+import net.neoforged.neoforge.common.util.FakePlayer;
 
-public class ForgePlatformHelper implements IPlatformHelper {
+public class NeoForgePlatformHelper implements IPlatformHelper {
 
 	@Override
 	public boolean isValidUser(Player player) {
@@ -16,26 +16,26 @@ public class ForgePlatformHelper implements IPlatformHelper {
 
 	@Override
 	public LineColor getLineColor() {
-		return MeasurementConfigForge.CLIENT.lineColor.get();
+		return MeasurementConfigNeoForge.CLIENT.lineColor.get();
 	}
 
 	@Override
 	public TextColor getTextColor() {
-		return MeasurementConfigForge.CLIENT.textColor.get();
+		return MeasurementConfigNeoForge.CLIENT.textColor.get();
 	}
 
 	@Override
 	public float getLineWidth() {
-		return MeasurementConfigForge.CLIENT.lineWidth.get().floatValue();
+		return MeasurementConfigNeoForge.CLIENT.lineWidth.get().floatValue();
 	}
 
 	@Override
 	public float getLineWidthMax() {
-		return MeasurementConfigForge.CLIENT.lineWidthMax.get().floatValue();
+		return MeasurementConfigNeoForge.CLIENT.lineWidthMax.get().floatValue();
 	}
 
 	@Override
 	public float getTextSize() {
-		return MeasurementConfigForge.CLIENT.textSize.get().floatValue();
+		return MeasurementConfigNeoForge.CLIENT.textSize.get().floatValue();
 	}
 }

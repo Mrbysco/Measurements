@@ -18,7 +18,7 @@ public class BoxHandler {
 			return InteractionResult.SUCCESS;
 		}
 
-		if (boxList.size() > 0) {
+		if (!boxList.isEmpty()) {
 			MeasurementBox lastBox = boxList.get(boxList.size() - 1);
 
 			if (lastBox.isFinished()) {
@@ -41,7 +41,7 @@ public class BoxHandler {
 	}
 
 	public static void undo() {
-		if (boxList.size() > 0) {
+		if (!boxList.isEmpty()) {
 			boxList.remove(boxList.size() - 1);
 		}
 	}
