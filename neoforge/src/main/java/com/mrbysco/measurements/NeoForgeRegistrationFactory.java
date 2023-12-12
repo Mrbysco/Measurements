@@ -57,7 +57,7 @@ public class NeoForgeRegistrationFactory implements RegistrationProvider.Factory
 
 				@Override
 				public ResourceKey<I> getResourceKey() {
-					return obj.getKey();
+					return (ResourceKey<I>) obj.getKey();
 				}
 
 				@Override
@@ -72,7 +72,7 @@ public class NeoForgeRegistrationFactory implements RegistrationProvider.Factory
 
 				@Override
 				public Holder<I> asHolder() {
-					return obj.getHolder().orElseThrow();
+					return (Holder<I>) obj;
 				}
 			};
 			entries.add((RegistryObject<T>) ro);
