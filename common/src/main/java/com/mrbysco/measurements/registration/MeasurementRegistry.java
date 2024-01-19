@@ -6,7 +6,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.Item;
 
 /**
- * Example class for item registration
+ * Class that holds all the registry objects for the mod
  */
 public class MeasurementRegistry {
 
@@ -15,6 +15,9 @@ public class MeasurementRegistry {
 	 */
 	public static final RegistrationProvider<Item> ITEMS = RegistrationProvider.get(BuiltInRegistries.ITEM, Constants.MOD_ID);
 
+	/**
+	 * The registry object for the tape measure item
+	 */
 	public static final RegistryObject<Item> TAPE_MEASURE_ITEM = ITEMS.register("tape_measure", () -> new TapeItem(new Item.Properties()));
 
 

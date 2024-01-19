@@ -20,10 +20,18 @@ public class MeasurementsConfigFabric implements ConfigData {
 		@Comment("Set text size [Default: 0.02]")
 		public double textSize = 0.02D;
 		@Comment("Set line width (thickness). [Default: 2]")
-		@ConfigEntry.BoundedDiscrete(min = 1, max = 16)
 		public double lineWidth = 2.0d;
 		@Comment("Set line width when further away (thickness). [Default: 2]")
-		@ConfigEntry.BoundedDiscrete(min = 1, max = 16)
 		public int lineWidthMax = 2;
+	}
+
+	@Override
+	public void validatePostLoad() throws ValidationException {
+		if (client.lineWidth < 1 || client.lineWidth > 16) {
+			client.lineWidth = 2;
+		}
+		if (client.lineWidthMax < 1 || client.lineWidthMax > 16) {
+			client.lineWidthMax = 2;
+		}
 	}
 }

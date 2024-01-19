@@ -10,7 +10,6 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
-import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
@@ -18,8 +17,7 @@ import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 @Mod(Constants.MOD_ID)
 public class MeasurementsNeoForge {
 
-	public MeasurementsNeoForge() {
-		IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
+	public MeasurementsNeoForge(IEventBus eventBus) {
 		ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, MeasurementConfigNeoForge.clientSpec);
 		eventBus.register(MeasurementConfigNeoForge.class);
 
