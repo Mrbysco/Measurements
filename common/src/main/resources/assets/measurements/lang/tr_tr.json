@@ -1,0 +1,13 @@
+{
+  "_comment": "Items",
+  "item.measurements.tape_measure": "Şerit Metre",
+
+  "_comment": "ClothConfig",
+  "text.autoconfig.measurements.title": "Measurements",
+  "text.autoconfig.measurements.option.client": "İstemci",
+  "text.autoconfig.measurements.option.client.lineColor": "Çizgi Rengi",
+  "text.autoconfig.measurements.option.client.textColor": "Yazı Rengi",
+  "text.autoconfig.measurements.option.client.textSize": "Yazı Büyüklüğü",
+  "text.autoconfig.measurements.option.client.lineWidth": "Çizgi Genişliği",
+  "text.autoconfig.measurements.option.client.lineWidthMax": "Maks Çizgi Genişliği"
+}
