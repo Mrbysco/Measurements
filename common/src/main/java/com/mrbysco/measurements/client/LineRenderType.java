@@ -1,29 +1,21 @@
 package com.mrbysco.measurements.client;
 
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.VertexFormat;
-import com.mojang.blaze3d.vertex.VertexFormat.Mode;
 import net.minecraft.client.renderer.RenderType;
 
 import java.util.OptionalDouble;
 
-public class LineRenderType extends RenderType {
-	public LineRenderType(String nameIn, VertexFormat formatIn, Mode drawMode, int bufferSizeIn, boolean useDelegateIn, boolean needsSortingIn, Runnable setupTaskIn, Runnable clearTaskIn) {
-		super(nameIn, formatIn, drawMode, bufferSizeIn, useDelegateIn, needsSortingIn, setupTaskIn, clearTaskIn);
+public abstract class LineRenderType extends RenderType {
+
+	public LineRenderType(String name, int bufferSize, boolean affectsCrumbling, boolean sortOnUpload,
+	                      Runnable setupState, Runnable clearState) {
+		super(name, bufferSize, affectsCrumbling, sortOnUpload, setupState, clearState);
 	}
 
 	public static RenderType lineRenderType(float lineWidth) {
-		return create("lines_no_depth",
-				DefaultVertexFormat.POSITION_COLOR, Mode.LINES, 256, false, false,
-				CompositeState.builder()
-						.setShaderState(RENDERTYPE_LINES_SHADER)
-						.setLineState(new LineStateShard(OptionalDouble.of(lineWidth)))
-						.setLayeringState(VIEW_OFFSET_Z_LAYERING)
-						.setTransparencyState(NO_TRANSPARENCY)
-						.setOutputState(ITEM_ENTITY_TARGET)
-						.setWriteMaskState(COLOR_DEPTH_WRITE)
-						.setCullState(NO_CULL)
-						.setDepthTestState(NO_DEPTH_TEST)
-						.createCompositeState(false));
+		return RenderType.create("lines_no_depth", 256, LinePipelines.LINES_NO_DEPTH, RenderType.CompositeState.builder()
+				.setLineState(new LineStateShard(OptionalDouble.of(lineWidth)))
+				.setLayeringState(VIEW_OFFSET_Z_LAYERING)
+				.setOutputState(ITEM_ENTITY_TARGET)
+				.createCompositeState(false));
 	}
 }

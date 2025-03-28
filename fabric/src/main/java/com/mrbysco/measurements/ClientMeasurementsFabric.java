@@ -2,6 +2,7 @@ package com.mrbysco.measurements;
 
 import com.mrbysco.measurements.callback.PlayerTickCallback;
 import com.mrbysco.measurements.client.ClientClass;
+import com.mrbysco.measurements.client.LinePipelines;
 import com.mrbysco.measurements.config.MeasurementsConfigFabric;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.ConfigHolder;
@@ -9,6 +10,7 @@ import me.shedaniel.autoconfig.serializer.Toml4jConfigSerializer;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.world.InteractionResult;
 
 import java.io.IOException;
@@ -70,5 +72,7 @@ public class ClientMeasurementsFabric implements ClientModInitializer {
 			Minecraft mc = Minecraft.getInstance();
 			ClientClass.onRenderWorldLast(mc.player, e.projectionMatrix(), e.matrixStack(), mc.renderBuffers(), e.camera());
 		});
+
+		RenderPipelines.register(LinePipelines.LINES_NO_DEPTH);
 	}
 }

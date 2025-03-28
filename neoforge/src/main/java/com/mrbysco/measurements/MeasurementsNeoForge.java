@@ -28,6 +28,7 @@ public class MeasurementsNeoForge {
 
 			NeoForge.EVENT_BUS.register(new ClientHandler());
 			NeoForge.EVENT_BUS.register(new LoginHandler());
+			eventBus.addListener(ClientHandler::registerRenderPipeline);
 		}
 	}
 
