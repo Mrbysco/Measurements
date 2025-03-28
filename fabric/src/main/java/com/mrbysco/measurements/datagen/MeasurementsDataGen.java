@@ -1,16 +1,22 @@
 package com.mrbysco.measurements.datagen;
 
 import com.mrbysco.measurements.registration.MeasurementRegistry;
+import net.fabricmc.fabric.api.client.datagen.v1.provider.FabricModelProvider;
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags;
+import net.minecraft.client.data.models.BlockModelGenerators;
+import net.minecraft.client.data.models.ItemModelGenerators;
+import net.minecraft.client.data.models.model.ModelTemplates;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.data.recipes.ShapedRecipeBuilder;
+import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.world.item.Items;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -19,17 +25,35 @@ public class MeasurementsDataGen implements DataGeneratorEntrypoint {
 	public void onInitializeDataGenerator(FabricDataGenerator generator) {
 		var pack = generator.createPack();
 
-		pack.addProvider(MeasurementsRecipeProvider::new);
+		pack.addProvider(MeasurementsRecipeProvider.Runner::new);
+		pack.addProvider(MeasurementsModels::new);
 	}
 
-	public static class MeasurementsRecipeProvider extends FabricRecipeProvider {
-		public MeasurementsRecipeProvider(FabricDataOutput packOutput, CompletableFuture<HolderLookup.Provider> lookupProvider) {
-			super(packOutput, lookupProvider);
+	public static class MeasurementsModels extends FabricModelProvider {
+
+		public MeasurementsModels(FabricDataOutput output) {
+			super(output);
 		}
 
 		@Override
-		public void buildRecipes(RecipeOutput output) {
-			ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, MeasurementRegistry.TAPE_MEASURE_ITEM.get())
+		public void generateBlockStateModels(BlockModelGenerators blockModels) {
+			// No block models to generate
+		}
+
+		@Override
+		public void generateItemModels(ItemModelGenerators itemModels) {
+			itemModels.generateFlatItem(MeasurementRegistry.TAPE_MEASURE_ITEM.get(), ModelTemplates.FLAT_ITEM);
+		}
+	}
+
+	public static class MeasurementsRecipeProvider extends RecipeProvider {
+		public MeasurementsRecipeProvider(HolderLookup.Provider registries, RecipeOutput output) {
+			super(registries, output);
+		}
+
+		@Override
+		public void buildRecipes() {
+			shaped(RecipeCategory.TOOLS, MeasurementRegistry.TAPE_MEASURE_ITEM.get())
 					.pattern(" G ")
 					.pattern("GIY")
 					.pattern(" GY")
@@ -40,6 +64,24 @@ public class MeasurementsDataGen implements DataGeneratorEntrypoint {
 					.unlockedBy("has_yellow_wool", has(Items.YELLOW_WOOL))
 					.unlockedBy("has_gray_wool", has(Items.GRAY_WOOL))
 					.save(output);
+		}
+
+		public static class Runner extends FabricRecipeProvider {
+
+			public Runner(FabricDataOutput output, CompletableFuture<Provider> registriesFuture) {
+				super(output, registriesFuture);
+			}
+
+			@Override
+			@NotNull
+			protected RecipeProvider createRecipeProvider(HolderLookup.Provider provider, RecipeOutput recipeOutput) {
+				return new MeasurementsRecipeProvider(provider, recipeOutput);
+			}
+
+			@Override
+			public String getName() {
+				return "Measurements Recipes";
+			}
 		}
 	}
 }

@@ -3,23 +3,22 @@ package com.mrbysco.measurements.client;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-import com.mrbysco.measurements.Constants;
 import com.mrbysco.measurements.config.LineColor;
 import com.mrbysco.measurements.config.TextColor;
 import com.mrbysco.measurements.platform.Services;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderBuffers;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.ShapeRenderer;
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.util.FastColor;
+import net.minecraft.util.ARGB;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
@@ -86,9 +85,9 @@ public class MeasurementBox {
 		if (!dimensionKey.location().equals(currentDimensionKey.location())) return;
 
 		int color = this.lineColor.getTextureDiffuseColor();
-		final float r = (float)FastColor.ARGB32.red(color) / 255F;
-		final float g = (float)FastColor.ARGB32.green(color) / 255F;
-		final float b = (float)FastColor.ARGB32.blue(color) / 255F;
+		final float r = (float) ARGB.red(color) / 255F;
+		final float g = (float) ARGB.green(color) / 255F;
+		final float b = (float) ARGB.blue(color) / 255F;
 		final float a = 0.95F;
 
 		Vec3 pos = camera.getPosition();
@@ -107,7 +106,7 @@ public class MeasurementBox {
 		//Translate negative camera position
 		poseStack.translate(-pos.x, -pos.y, -pos.z);
 		//Render the outline
-		LevelRenderer.renderLineBox(poseStack, builder, box, r, g, b, a);
+		ShapeRenderer.renderLineBox(poseStack, builder, box, r, g, b, a);
 		bufferSource.endBatch(renderType);
 		poseStack.popPose();
 

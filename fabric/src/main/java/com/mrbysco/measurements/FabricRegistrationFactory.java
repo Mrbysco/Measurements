@@ -41,7 +41,7 @@ public class FabricRegistrationFactory implements RegistrationProvider.Factory {
 			if (reg == null) {
 				throw new RuntimeException("Registry with name " + key.location() + " was not found!");
 			}
-			registry = (Registry<T>) reg;
+			registry = (Registry<T>) reg.orElseThrow();
 		}
 
 		private Provider(String modId, Registry<T> registry) {
@@ -74,7 +74,7 @@ public class FabricRegistrationFactory implements RegistrationProvider.Factory {
 
 				@Override
 				public Holder<I> asHolder() {
-					return (Holder<I>) registry.getHolderOrThrow((ResourceKey<T>) this.key);
+					return (Holder<I>) registry.getOrThrow((ResourceKey<T>) this.key);
 				}
 			};
 			entries.add((RegistryObject<T>) ro);

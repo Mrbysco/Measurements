@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "G": {
-      "item": "minecraft:gray_wool"
-    },
-    "I": {
-      "tag": "c:ingots/iron"
-    },
-    "Y": {
-      "item": "minecraft:yellow_wool"
-    }
+    "G": "minecraft:gray_wool",
+    "I": "#c:ingots/iron",
+    "Y": "minecraft:yellow_wool"
   },
   "pattern": [
     " G ",
