@@ -1,12 +1,15 @@
 plugins {
-    id 'fabric-loom' version '1.1-SNAPSHOT'
-    id 'maven-publish'
+    id 'java'
     id 'idea'
-    id 'com.matthewprenger.cursegradle' version '1.4.0'
-    id 'com.modrinth.minotaur' version "2.+"
+    id 'maven-publish'
+    id 'fabric-loom'
+    id 'com.matthewprenger.cursegradle'
+    id 'com.modrinth.minotaur'
 }
 
-archivesBaseName = "${mod_name}-fabric-${minecraft_version}"
+base {
+    archivesName = "${mod_name}-fabric-${minecraft_version}"
+}
 
 repositories {
     maven {
@@ -35,7 +38,12 @@ dependencies {
 }
 
 loom {
-    accessWidenerPath = project(":Common").file("src/main/resources/measurements.accesswidener")
+    if (project(":Common").file("src/main/resources/${mod_id}.accesswidener").exists()) {
+        accessWidenerPath.set(project(":Common").file("src/main/resources/${mod_id}.accesswidener"))
+    }
+    mixin {
+        defaultRefmapName.set("${mod_id}.refmap.json")
+    }
     runs {
         client {
             client()
@@ -52,25 +60,25 @@ loom {
     }
 }
 
+tasks.withType(JavaCompile).configureEach {
+    source(project(":Common").sourceSets.main.allSource)
+}
+tasks.withType(Javadoc).configureEach {
+    source(project(":Common").sourceSets.main.allJava)
+}
+tasks.named("sourcesJar", Jar) {
+    from(project(":Common").sourceSets.main.allSource)
+}
 
 processResources {
     from project(":Common").sourceSets.main.resources
-    inputs.property "version", project.version
-
-    filesMatching("fabric.mod.json") {
-        expand "version": project.version
-    }
-}
-
-tasks.withType(JavaCompile) {
-    source(project(":Common").sourceSets.main.allSource)
 }
 
 publishing {
     publications {
         mavenJava(MavenPublication) {
             groupId project.group
-            artifactId project.archivesBaseName
+            artifactId base.archivesName.get()
             version project.version
             from components.java
         }
