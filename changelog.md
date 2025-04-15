@@ -1,0 +1,1 @@
+* Fix the measurement lines not rendering on AMD GPUs
