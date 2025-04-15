@@ -1,1 +1,1 @@
-* Initial update to 1.20
+* Fix the measurement lines not rendering on AMD GPUs
