@@ -1,1 +1,1 @@
-* Initial update to 1.21.4
+* Fix the measurement lines not rendering on AMD GPUs
