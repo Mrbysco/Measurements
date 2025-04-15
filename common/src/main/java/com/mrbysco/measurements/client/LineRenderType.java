@@ -14,7 +14,7 @@ public class LineRenderType extends RenderType {
 
 	public static RenderType lineRenderType(float lineWidth) {
 		return create("lines_no_depth",
-				DefaultVertexFormat.POSITION_COLOR, Mode.LINES, 256, false, false,
+				DefaultVertexFormat.POSITION_COLOR_NORMAL, Mode.LINES, 256, false, false,
 				CompositeState.builder()
 						.setShaderState(RENDERTYPE_LINES_SHADER)
 						.setLineState(new LineStateShard(OptionalDouble.of(lineWidth)))
