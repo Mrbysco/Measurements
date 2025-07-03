@@ -3,7 +3,6 @@ package com.mrbysco.measurements.client;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-import com.mrbysco.measurements.config.LineColor;
 import com.mrbysco.measurements.config.TextColor;
 import com.mrbysco.measurements.platform.Services;
 import net.minecraft.client.Camera;
@@ -48,12 +47,12 @@ public class MeasurementBox {
 		this.dimensionKey = dimensionKey;
 		this.finished = false;
 
-		this.lineColor = ((LineColor) Services.PLATFORM.getLineColor()).getColor(BoxHandler.random);
-		TextColor textColor = ((TextColor) Services.PLATFORM.getTextColor());
+		this.lineColor = Services.PLATFORM.getLineColor().getColor(BoxHandler.random);
+		TextColor textColor = Services.PLATFORM.getTextColor();
 		if (textColor == TextColor.XYZRGB) {
-			this.textX = ((TextColor) Services.PLATFORM.getTextColor()).getColor(BoxHandler.random, Direction.Axis.X);
-			this.textY = ((TextColor) Services.PLATFORM.getTextColor()).getColor(BoxHandler.random, Direction.Axis.Y);
-			this.textZ = ((TextColor) Services.PLATFORM.getTextColor()).getColor(BoxHandler.random, Direction.Axis.Z);
+			this.textX = Services.PLATFORM.getTextColor().getColor(BoxHandler.random, Direction.Axis.X);
+			this.textY = Services.PLATFORM.getTextColor().getColor(BoxHandler.random, Direction.Axis.Y);
+			this.textZ = Services.PLATFORM.getTextColor().getColor(BoxHandler.random, Direction.Axis.Z);
 		} else {
 			DyeColor color = textColor.getColor(BoxHandler.random, null);
 			this.textX = color;
@@ -132,7 +131,7 @@ public class MeasurementBox {
 		lines.add(Line.createLine(new AABB(boxT.maxX, boxT.minY, boxT.minZ, boxT.maxX, boxT.minY, boxT.maxZ), pos, clippingHelper));
 		lines.add(Line.createLine(new AABB(boxT.maxX, boxT.maxY, boxT.minZ, boxT.maxX, boxT.maxY, boxT.maxZ), pos, clippingHelper));
 		Collections.sort(lines);
-		final Vec3 lineZ = lines.get(0).line.getCenter();
+		final Vec3 lineZ = lines.getFirst().line.getCenter();
 
 		lines.clear();
 		lines.add(Line.createLine(new AABB(boxT.minX, boxT.minY, boxT.minZ, boxT.minX, boxT.maxY, boxT.minZ), pos, clippingHelper));
@@ -140,7 +139,7 @@ public class MeasurementBox {
 		lines.add(Line.createLine(new AABB(boxT.maxX, boxT.minY, boxT.minZ, boxT.maxX, boxT.maxY, boxT.minZ), pos, clippingHelper));
 		lines.add(Line.createLine(new AABB(boxT.maxX, boxT.minY, boxT.maxZ, boxT.maxX, boxT.maxY, boxT.maxZ), pos, clippingHelper));
 		Collections.sort(lines);
-		final Vec3 lineY = lines.get(0).line.getCenter();
+		final Vec3 lineY = lines.getFirst().line.getCenter();
 
 		lines.clear();
 		lines.add(Line.createLine(new AABB(boxT.minX, boxT.minY, boxT.minZ, boxT.maxX, boxT.minY, boxT.minZ), pos, clippingHelper));
@@ -148,7 +147,7 @@ public class MeasurementBox {
 		lines.add(Line.createLine(new AABB(boxT.minX, boxT.maxY, boxT.minZ, boxT.maxX, boxT.maxY, boxT.minZ), pos, clippingHelper));
 		lines.add(Line.createLine(new AABB(boxT.minX, boxT.maxY, boxT.maxZ, boxT.maxX, boxT.maxY, boxT.maxZ), pos, clippingHelper));
 		Collections.sort(lines);
-		final Vec3 lineX = lines.get(0).line.getCenter();
+		final Vec3 lineX = lines.getFirst().line.getCenter();
 		lines.clear();
 
 		poseStack.pushPose();

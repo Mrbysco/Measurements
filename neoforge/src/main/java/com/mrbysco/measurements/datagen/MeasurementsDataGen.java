@@ -17,10 +17,11 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.CompletableFuture;
 
-@EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber
 public class MeasurementsDataGen {
 	@SubscribeEvent
 	public static void gatherData(GatherDataEvent.Client event) {
@@ -39,7 +40,7 @@ public class MeasurementsDataGen {
 		}
 
 		@Override
-		protected void registerModels(BlockModelGenerators blockModels, ItemModelGenerators itemModels) {
+		protected void registerModels(@NotNull BlockModelGenerators blockModels, ItemModelGenerators itemModels) {
 			itemModels.generateFlatItem(MeasurementRegistry.TAPE_MEASURE_ITEM.get(), ModelTemplates.FLAT_ITEM);
 		}
 	}
@@ -69,11 +70,13 @@ public class MeasurementsDataGen {
 				super(packOutput, lookupProvider);
 			}
 
+			@NotNull
 			@Override
-			protected RecipeProvider createRecipeProvider(HolderLookup.Provider provider, RecipeOutput recipeOutput) {
+			protected RecipeProvider createRecipeProvider(HolderLookup.@NotNull Provider provider, RecipeOutput recipeOutput) {
 				return new MeasurementsRecipeProvider(provider, recipeOutput);
 			}
 
+			@NotNull
 			@Override
 			public String getName() {
 				return "Measurements Recipes";

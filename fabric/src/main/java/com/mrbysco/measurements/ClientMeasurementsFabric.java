@@ -68,9 +68,9 @@ public class ClientMeasurementsFabric implements ClientModInitializer {
 			return InteractionResult.PASS;
 		});
 
-		WorldRenderEvents.AFTER_TRANSLUCENT.register(e -> {
+		WorldRenderEvents.AFTER_TRANSLUCENT.register(context -> {
 			Minecraft mc = Minecraft.getInstance();
-			ClientClass.onRenderWorldLast(mc.player, e.projectionMatrix(), e.matrixStack(), mc.renderBuffers(), e.camera());
+			ClientClass.onRenderWorldLast(mc.player, context.projectionMatrix(), context.matrixStack(), mc.renderBuffers(), context.camera());
 		});
 
 		RenderPipelines.register(LinePipelines.LINES_NO_DEPTH);

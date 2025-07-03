@@ -3,6 +3,7 @@ package com.mrbysco.measurements.client;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,14 +13,14 @@ public class BoxHandler {
 	protected static final Random random = new Random();
 	private static final List<MeasurementBox> boxList = new ArrayList<>();
 
-	public static InteractionResult addBox(Player playerEntity, BlockPos blockPos) {
+	public static InteractionResult addBox(@NotNull Player playerEntity, @NotNull BlockPos blockPos) {
 		if (playerEntity.isShiftKeyDown()) {
 			undo();
 			return InteractionResult.SUCCESS;
 		}
 
 		if (!boxList.isEmpty()) {
-			MeasurementBox lastBox = boxList.get(boxList.size() - 1);
+			MeasurementBox lastBox = boxList.getLast();
 
 			if (lastBox.isFinished()) {
 				final MeasurementBox box = new MeasurementBox(blockPos, playerEntity.level().dimension());
@@ -42,7 +43,7 @@ public class BoxHandler {
 
 	public static void undo() {
 		if (!boxList.isEmpty()) {
-			boxList.remove(boxList.size() - 1);
+			boxList.removeLast();
 		}
 	}
 

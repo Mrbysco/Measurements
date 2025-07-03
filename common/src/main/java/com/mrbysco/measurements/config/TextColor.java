@@ -48,14 +48,14 @@ public enum TextColor {
 				return DyeColor.YELLOW;
 			}
 			switch (axis) {
-				default -> {
-					return DyeColor.RED;
-				}
 				case Y -> {
 					return DyeColor.GREEN;
 				}
 				case Z -> {
 					return DyeColor.BLUE;
+				}
+				default -> {
+					return DyeColor.RED;
 				}
 			}
 		} else {
