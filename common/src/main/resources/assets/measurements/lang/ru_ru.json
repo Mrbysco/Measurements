@@ -1,0 +1,13 @@
+{
+  "_comment": "Items",
+  "item.measurements.tape_measure": "Рулетка",
+
+  "_comment": "ClothConfig",
+  "text.autoconfig.measurements.title": "Measurements",
+  "text.autoconfig.measurements.option.client": "Клиент",
+  "text.autoconfig.measurements.option.client.lineColor": "Цвет линии",
+  "text.autoconfig.measurements.option.client.textColor": "Цвет текста",
+  "text.autoconfig.measurements.option.client.textSize": "Размер текста",
+  "text.autoconfig.measurements.option.client.lineWidth": "Ширина линии",
+  "text.autoconfig.measurements.option.client.lineWidthMax": "Макс. ширина линии"
+}
