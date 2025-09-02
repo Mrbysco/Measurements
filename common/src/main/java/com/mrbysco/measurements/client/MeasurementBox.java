@@ -133,7 +133,7 @@ public class MeasurementBox {
 		lines.add(Line.createLine(new AABB(boxT.maxX, boxT.maxY, boxT.minZ, boxT.maxX, boxT.maxY, boxT.maxZ), pos));
 		Collections.sort(lines);
 
-		Vec3 lineZ = lines.getFirst().line;
+		AABB lineZ = lines.getFirst().line;
 		var maxZ = lineZ.getMaxPosition();
 		var minZ = lineZ.getMinPosition();
 
