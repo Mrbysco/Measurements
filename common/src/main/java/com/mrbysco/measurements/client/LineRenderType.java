@@ -15,7 +15,7 @@ public abstract class LineRenderType extends RenderType {
 		return RenderType.create("lines_no_depth", 256, LinePipelines.LINES_NO_DEPTH, RenderType.CompositeState.builder()
 				.setLineState(new LineStateShard(OptionalDouble.of(lineWidth)))
 				.setLayeringState(VIEW_OFFSET_Z_LAYERING)
-				.setOutputState(ITEM_ENTITY_TARGET)
+				.setOutputState(OUTLINE_TARGET)
 				.createCompositeState(false));
 	}
 }
