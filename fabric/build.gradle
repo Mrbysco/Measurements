@@ -2,7 +2,7 @@ plugins {
     id 'java'
     id 'idea'
     id 'maven-publish'
-    id 'fabric-loom' version '1.10-SNAPSHOT'
+    id 'fabric-loom' version '1.11-SNAPSHOT'
     id 'net.darkhax.curseforgegradle'
     id 'com.modrinth.minotaur'
 }
@@ -123,6 +123,7 @@ if (System.getenv().CURSEFORGE_KEY) {
         mainFile.releaseType = 'beta'
         mainFile.addModLoader("Fabric")
         mainFile.addGameVersion "${minecraft_version}"
+        mainFile.addGameVersion('1.21.7')
         mainFile.addJavaVersion("Java 21")
         mainFile.addGameVersion('Server', 'Client')
 
@@ -142,7 +143,7 @@ if (System.getenv().MODRINTH_KEY) {
         versionNumber = project.version
         uploadFile = remapJar
         changelog = file("$project.rootDir/changelog.md").text
-        gameVersions = ["${minecraft_version}"]
+        gameVersions = ["${minecraft_version}", "1.21.7"]
         loaders = ["fabric"]
 
         dependencies {

@@ -3,7 +3,7 @@ plugins {
     id 'eclipse'
     id 'idea'
     id 'maven-publish'
-    id 'net.neoforged.gradle.userdev' version '7.0.184'
+    id 'net.neoforged.gradle.userdev' version '7.0.192'
     id 'net.darkhax.curseforgegradle'
     id 'com.modrinth.minotaur'
 }
@@ -109,6 +109,7 @@ if (System.getenv().CURSEFORGE_KEY) {
         mainFile.releaseType = 'release'
         mainFile.addModLoader("NeoForge")
         mainFile.addGameVersion "${minecraft_version}"
+        mainFile.addGameVersion('1.21.7')
         mainFile.addJavaVersion("Java 21")
         mainFile.addGameVersion('Server', 'Client')
 
@@ -126,7 +127,7 @@ if (System.getenv().MODRINTH_KEY) {
         versionNumber = project.version
         uploadFile = jar
         changelog = file("$project.rootDir/changelog.md").text
-        gameVersions = ["${minecraft_version}"]
+        gameVersions = ["${minecraft_version}", "1.21.7"]
         loaders = ["neoforge"]
     }
 }
