@@ -20,8 +20,8 @@ public class LineRenderType extends RenderType {
 						.setLineState(new LineStateShard(OptionalDouble.of(lineWidth)))
 						.setLayeringState(VIEW_OFFSET_Z_LAYERING)
 						.setTransparencyState(NO_TRANSPARENCY)
-						.setOutputState(ITEM_ENTITY_TARGET)
-						.setWriteMaskState(COLOR_DEPTH_WRITE)
+						.setOutputState(OUTLINE_TARGET)
+						.setWriteMaskState(COLOR_WRITE)
 						.setCullState(NO_CULL)
 						.setDepthTestState(NO_DEPTH_TEST)
 						.createCompositeState(false));
