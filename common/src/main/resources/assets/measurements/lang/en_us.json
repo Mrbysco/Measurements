@@ -9,5 +9,13 @@
   "text.autoconfig.measurements.option.client.textColor": "Text Color",
   "text.autoconfig.measurements.option.client.textSize": "Text Size",
   "text.autoconfig.measurements.option.client.lineWidth": "Line Width",
-  "text.autoconfig.measurements.option.client.lineWidthMax": "Line Width Max"
+  "text.autoconfig.measurements.option.client.lineWidthMax": "Line Width Max",
+
+  "_comment": "NeoForge Config",
+  "measurements.configuration.client": "Client",
+  "measurements.configuration.lineColor": "Line Color",
+  "measurements.configuration.textColor": "Text Color",
+  "measurements.configuration.textSize": "Text Size",
+  "measurements.configuration.lineWidth": "Line Width",
+  "measurements.configuration.lineWidthMax": "Line Width Max"
 }
