@@ -1,1 +1,1 @@
-* Enable in-game config
+* Enable in-game config 
