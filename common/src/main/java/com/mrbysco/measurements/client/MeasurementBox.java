@@ -106,7 +106,7 @@ public class MeasurementBox {
 		//Translate negative camera position
 		poseStack.translate(-pos.x, -pos.y, -pos.z);
 		//Render the outline
-		ShapeRenderer.renderLineBox(poseStack, builder, box, r, g, b, a);
+		ShapeRenderer.renderLineBox(poseStack.last(), builder, box, r, g, b, a);
 		bufferSource.endBatch(renderType);
 		poseStack.popPose();
 

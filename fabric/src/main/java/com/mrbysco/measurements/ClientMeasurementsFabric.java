@@ -8,7 +8,6 @@ import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.ConfigHolder;
 import me.shedaniel.autoconfig.serializer.Toml4jConfigSerializer;
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.world.InteractionResult;
@@ -68,10 +67,10 @@ public class ClientMeasurementsFabric implements ClientModInitializer {
 			return InteractionResult.PASS;
 		});
 
-		WorldRenderEvents.AFTER_TRANSLUCENT.register(context -> {
-			Minecraft mc = Minecraft.getInstance();
-			ClientClass.onRenderWorldLast(mc.player, context.projectionMatrix(), context.matrixStack(), mc.renderBuffers(), context.camera());
-		});
+//		WorldRenderEvents.AFTER_TRANSLUCENT.register(context -> {
+//			Minecraft mc = Minecraft.getInstance();
+//			ClientClass.onRenderWorldLast(mc.player, context.projectionMatrix(), context.matrixStack(), mc.renderBuffers(), context.camera());
+//		});
 
 		RenderPipelines.register(LinePipelines.LINES_NO_DEPTH);
 	}

@@ -18,7 +18,7 @@ public class ClientHandler {
 
 	@SubscribeEvent
 	public void onPlayerTick(PlayerTickEvent.Post event) {
-		if (event.getEntity().level().isClientSide) {
+		if (event.getEntity().level().isClientSide()) {
 			ClientClass.onPlayerTick(event.getEntity());
 		}
 	}
