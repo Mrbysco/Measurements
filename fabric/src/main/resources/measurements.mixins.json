@@ -7,7 +7,6 @@
   ],
   "client": [
     "ClientPacketListenerMixin",
-    "LevelRendererMixin",
     "MinecraftMixin",
     "PlayerMixin"
   ],

@@ -8,6 +8,7 @@ import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.ConfigHolder;
 import me.shedaniel.autoconfig.serializer.Toml4jConfigSerializer;
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderEvents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.world.InteractionResult;
@@ -66,11 +67,16 @@ public class ClientMeasurementsFabric implements ClientModInitializer {
 			ClientClass.onPlayerTick(player);
 			return InteractionResult.PASS;
 		});
-
-//		WorldRenderEvents.AFTER_TRANSLUCENT.register(context -> {
-//			Minecraft mc = Minecraft.getInstance();
-//			ClientClass.onRenderWorldLast(mc.player, context.projectionMatrix(), context.matrixStack(), mc.renderBuffers(), context.camera());
-//		});
+		WorldRenderEvents.BEFORE_TRANSLUCENT.register(context -> {
+			Minecraft mc = Minecraft.getInstance();
+			ClientClass.onRenderWorldLast(
+					mc.player,
+					mc.gameRenderer.getProjectionMatrix(0.0F),
+					context.matrices(),
+					mc.renderBuffers(),
+					mc.gameRenderer.getMainCamera()
+			);
+		});
 
 		RenderPipelines.register(LinePipelines.LINES_NO_DEPTH);
 	}
