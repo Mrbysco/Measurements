@@ -1,0 +1,21 @@
+{
+  "_comment": "Items",
+  "item.measurements.tape_measure": "ǝɹnsɐǝW ǝdɐ⟘",
+
+  "_comment": "ClothConfig",
+  "text.autoconfig.measurements.title": "sʇuǝɯǝɹnsɐǝW",
+  "text.autoconfig.measurements.option.client": "ʇuǝᴉꞁƆ",
+  "text.autoconfig.measurements.option.client.lineColor": "ɹoꞁoƆ ǝuᴉꞀ",
+  "text.autoconfig.measurements.option.client.textColor": "ɹoꞁoƆ ʇxǝ⟘",
+  "text.autoconfig.measurements.option.client.textSize": "ǝzᴉS ʇxǝ⟘",
+  "text.autoconfig.measurements.option.client.lineWidth": "ɥʇpᴉM ǝuᴉꞀ",
+  "text.autoconfig.measurements.option.client.lineWidthMax": "xɐW ɥʇpᴉM ǝuᴉꞀ",
+
+  "_comment": "NeoForge Config",
+  "measurements.configuration.client": "ʇuǝᴉꞁƆ",
+  "measurements.configuration.lineColor": "ɹoꞁoƆ ǝuᴉꞀ",
+  "measurements.configuration.textColor": "ɹoꞁoƆ ʇxǝ⟘",
+  "measurements.configuration.textSize": "ǝzᴉS ʇxǝ⟘",
+  "measurements.configuration.lineWidth": "ɥʇpᴉM ǝuᴉꞀ",
+  "measurements.configuration.lineWidthMax": "xɐW ɥʇpᴉM ǝuᴉꞀ"
+}
