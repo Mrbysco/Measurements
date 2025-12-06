@@ -5,7 +5,6 @@ import com.mrbysco.measurements.item.TapeItem;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 
 /**
@@ -30,7 +29,7 @@ public class MeasurementRegistry {
 	 * @return the ResourceKey for the item
 	 */
 	private static ResourceKey<Item> getKey(String path) {
-		return ResourceKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, path));
+		return ResourceKey.create(Registries.ITEM, Constants.modLoc(path));
 	}
 
 	// Called in the mod initializer / constructor in order to make sure that items are registered
