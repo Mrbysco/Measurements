@@ -38,7 +38,6 @@
     "java": ">=21",
     "fabric-api": "*",
     "cloth-config": ">=21"
-  },
-  "accessWidener": "measurements.accesswidener"
+  }
 }
 
