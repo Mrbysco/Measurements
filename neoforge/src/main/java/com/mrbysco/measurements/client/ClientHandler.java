@@ -13,7 +13,7 @@ import org.joml.Matrix4f;
 
 public class ClientHandler {
 	public static void registerRenderPipeline(RegisterRenderPipelinesEvent event) {
-		event.registerPipeline(LinePipelines.LINES_NO_DEPTH);
+//		event.registerPipeline(LinePipelines.LINES_NO_DEPTH);
 	}
 
 	@SubscribeEvent

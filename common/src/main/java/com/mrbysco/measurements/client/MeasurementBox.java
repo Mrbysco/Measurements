@@ -10,11 +10,13 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderBuffers;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.ShapeRenderer;
 import net.minecraft.client.renderer.culling.Frustum;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.gizmos.GizmoStyle;
+import net.minecraft.gizmos.Gizmos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.ARGB;
@@ -82,7 +84,7 @@ public class MeasurementBox {
 	}
 
 	public void render(ResourceKey<Level> currentDimensionKey, PoseStack poseStack, RenderBuffers renderBuffers, Camera camera, Matrix4f projection) {
-		if (!dimensionKey.location().equals(currentDimensionKey.location())) return;
+		if (!dimensionKey.identifier().equals(currentDimensionKey.identifier())) return;
 
 		int color = this.lineColor.getTextureDiffuseColor();
 		final float r = (float) ARGB.red(color) / 255F;
@@ -90,7 +92,7 @@ public class MeasurementBox {
 		final float b = (float) ARGB.blue(color) / 255F;
 		final float a = 0.95F;
 
-		Vec3 pos = camera.getPosition();
+		Vec3 pos = camera.position();
 
 		double distance = box.getCenter().distanceTo(pos);
 		float lineWidth = Services.PLATFORM.getLineWidth();
@@ -100,16 +102,8 @@ public class MeasurementBox {
 
 		MultiBufferSource.BufferSource bufferSource = renderBuffers.bufferSource();
 
-		poseStack.pushPose();
-		final RenderType renderType = LineRenderType.lineRenderType(lineWidth);
-		VertexConsumer builder = bufferSource.getBuffer(renderType);
-		//Translate negative camera position
-		poseStack.translate(-pos.x, -pos.y, -pos.z);
-		//Render the outline
-		ShapeRenderer.renderLineBox(poseStack.last(), builder, box, r, g, b, a);
-		bufferSource.endBatch(renderType);
-		poseStack.popPose();
-
+		Gizmos.cuboid(box, GizmoStyle.stroke(ARGB.colorFromFloat(a, r, g, b), lineWidth), true);
+		
 		//Render the line length text
 		drawLength(poseStack, camera, projection, bufferSource);
 	}
@@ -119,7 +113,7 @@ public class MeasurementBox {
 		final int lengthY = (int) box.getYsize();
 		final int lengthZ = (int) box.getZsize();
 
-		final Vec3 pos = camera.getPosition();
+		final Vec3 pos = camera.position();
 
 		final Frustum clippingHelper = new Frustum(poseStack.last().pose(), projection);
 		clippingHelper.prepare(pos.x, pos.y, pos.z);
