@@ -103,7 +103,7 @@ public class MeasurementBox {
 		MultiBufferSource.BufferSource bufferSource = renderBuffers.bufferSource();
 
 		Gizmos.cuboid(box, GizmoStyle.stroke(ARGB.colorFromFloat(a, r, g, b), lineWidth), true);
-		
+
 		//Render the line length text
 		drawLength(poseStack, camera, projection, bufferSource);
 	}

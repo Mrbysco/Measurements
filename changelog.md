@@ -1,1 +1,1 @@
-* Update fabric to use the new WorldRenderEvent from fabric api 0.137.0 (Requires at least fabric api 0.137.0 or higher)
+* Update to 1.21.11
