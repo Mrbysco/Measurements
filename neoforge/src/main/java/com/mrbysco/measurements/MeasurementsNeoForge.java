@@ -2,7 +2,7 @@ package com.mrbysco.measurements;
 
 import com.mrbysco.measurements.client.ClientHandler;
 import com.mrbysco.measurements.client.LoginHandler;
-import com.mrbysco.measurements.config.MeasurementConfigNeoForge;
+import com.mrbysco.measurements.config.MeasurementConfig;
 import com.mrbysco.measurements.registration.MeasurementRegistry;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.neoforged.api.distmarker.Dist;
@@ -25,9 +25,8 @@ public class MeasurementsNeoForge {
 		eventBus.addListener(this::addTabContents);
 
 		if (dist.isClient()) {
-			container.registerConfig(ModConfig.Type.CLIENT, MeasurementConfigNeoForge.clientSpec);
+			container.registerConfig(ModConfig.Type.CLIENT, MeasurementConfig.clientSpec);
 			container.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
-			eventBus.register(MeasurementConfigNeoForge.class);
 
 			NeoForge.EVENT_BUS.register(new ClientHandler());
 			NeoForge.EVENT_BUS.register(new LoginHandler());

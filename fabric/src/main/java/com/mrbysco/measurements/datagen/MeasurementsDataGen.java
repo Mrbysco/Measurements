@@ -4,7 +4,7 @@ import com.mrbysco.measurements.registration.MeasurementRegistry;
 import net.fabricmc.fabric.api.client.datagen.v1.provider.FabricModelProvider;
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
+import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags;
 import net.minecraft.client.data.models.BlockModelGenerators;
@@ -31,7 +31,7 @@ public class MeasurementsDataGen implements DataGeneratorEntrypoint {
 
 	public static class MeasurementsModels extends FabricModelProvider {
 
-		public MeasurementsModels(FabricDataOutput output) {
+		public MeasurementsModels(FabricPackOutput output) {
 			super(output);
 		}
 
@@ -68,7 +68,7 @@ public class MeasurementsDataGen implements DataGeneratorEntrypoint {
 
 		public static class Runner extends FabricRecipeProvider {
 
-			public Runner(FabricDataOutput output, CompletableFuture<Provider> registriesFuture) {
+			public Runner(FabricPackOutput output, CompletableFuture<Provider> registriesFuture) {
 				super(output, registriesFuture);
 			}
 

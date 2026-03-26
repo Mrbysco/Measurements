@@ -9,7 +9,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.event.RegisterRenderPipelinesEvent;
 import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
-import org.joml.Matrix4f;
+import org.joml.Matrix4fc;
 
 public class ClientHandler {
 	public static void registerRenderPipeline(RegisterRenderPipelinesEvent event) {
@@ -27,7 +27,7 @@ public class ClientHandler {
 	public void onRenderWorldLast(RenderLevelStageEvent.AfterTranslucentBlocks event) {
 		final Minecraft minecraft = Minecraft.getInstance();
 		LocalPlayer player = minecraft.player;
-		Matrix4f projectionMatrix = event.getModelViewMatrix();
+		Matrix4fc projectionMatrix = event.getModelViewMatrix();
 		PoseStack poseStack = event.getPoseStack();
 		RenderBuffers renderBuffers = minecraft.renderBuffers();
 		Camera camera = minecraft.gameRenderer.getMainCamera();

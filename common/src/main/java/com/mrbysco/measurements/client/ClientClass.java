@@ -11,7 +11,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
-import org.joml.Matrix4f;
+import org.joml.Matrix4fc;
 
 import java.util.List;
 
@@ -46,7 +46,7 @@ public class ClientClass {
 		}
 	}
 
-	public static void onRenderWorldLast(Player player, Matrix4f projectionMatrix, PoseStack poseStack, RenderBuffers renderBuffers, Camera camera) {
+	public static void onRenderWorldLast(Player player, Matrix4fc projectionMatrix, PoseStack poseStack, RenderBuffers renderBuffers, Camera camera) {
 		if (player == null || !player.isHolding(MeasurementRegistry.TAPE_MEASURE_ITEM.get())) return;
 
 		final ResourceKey<Level> currentDimension = player.level().dimension();
