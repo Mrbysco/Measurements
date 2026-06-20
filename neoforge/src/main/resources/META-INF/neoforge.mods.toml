@@ -15,12 +15,12 @@ Measure the distance between positions :)
 [[dependencies.measurements]]
 modId="minecraft"
 type="REQUIRED"
-versionRange="[26.1,)"
+versionRange="[26.2,)"
 ordering="NONE"
 side="BOTH"
 [[dependencies.measurements]]
 modId="neoforge"
 type="REQUIRED"
-versionRange="[26.1.0.0-alpha,)"
+versionRange="[26.2.0.0-beta,)"
 ordering="NONE"
 side="BOTH"

@@ -1,7 +1,5 @@
 package com.mrbysco.measurements;
 
-import com.mrbysco.measurements.client.ClientHandler;
-import com.mrbysco.measurements.client.LoginHandler;
 import com.mrbysco.measurements.config.MeasurementConfig;
 import com.mrbysco.measurements.registration.MeasurementRegistry;
 import net.minecraft.world.item.CreativeModeTabs;
@@ -13,7 +11,6 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
-import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 
 @Mod(Constants.MOD_ID)
@@ -27,10 +24,6 @@ public class MeasurementsNeoForge {
 		if (dist.isClient()) {
 			container.registerConfig(ModConfig.Type.CLIENT, MeasurementConfig.clientSpec);
 			container.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
-
-			NeoForge.EVENT_BUS.register(new ClientHandler());
-			NeoForge.EVENT_BUS.register(new LoginHandler());
-			eventBus.addListener(ClientHandler::registerRenderPipeline);
 		}
 	}
 

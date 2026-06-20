@@ -14,7 +14,7 @@ public class MinecraftMixin {
 	@Inject(method = "disconnect(Lnet/minecraft/client/gui/screens/Screen;Z)V", at = @At(
 			value = "HEAD")
 	)
-	public void measurements$disconnect(Screen screen, boolean bl, CallbackInfo ci) {
+	public void measurements$disconnect(Screen screen, boolean keepResourcePacks, CallbackInfo ci) {
 		ClientClass.onLogOut();
 	}
 }

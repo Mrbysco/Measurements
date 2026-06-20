@@ -4,7 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mrbysco.measurements.registration.MeasurementRegistry;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.RenderBuffers;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.player.Player;
@@ -46,7 +46,7 @@ public class ClientClass {
 		}
 	}
 
-	public static void onRenderWorldLast(Player player, Matrix4fc projectionMatrix, PoseStack poseStack, RenderBuffers renderBuffers, Camera camera) {
+	public static void onRenderWorldLast(Player player, Matrix4fc projectionMatrix, PoseStack poseStack, SubmitNodeCollector renderBuffers, Camera camera) {
 		if (player == null || !player.isHolding(MeasurementRegistry.TAPE_MEASURE_ITEM.get())) return;
 
 		final ResourceKey<Level> currentDimension = player.level().dimension();

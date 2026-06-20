@@ -58,11 +58,11 @@ public class MeasurementsDataGen implements DataGeneratorEntrypoint {
 					.pattern("GIY")
 					.pattern(" GY")
 					.define('I', ConventionalItemTags.IRON_INGOTS)
-					.define('Y', Items.YELLOW_WOOL)
-					.define('G', Items.GRAY_WOOL)
+					.define('Y', Items.WOOL.yellow())
+					.define('G', Items.WOOL.gray())
 					.unlockedBy("has_iron_ingot", has(ConventionalItemTags.IRON_INGOTS))
-					.unlockedBy("has_yellow_wool", has(Items.YELLOW_WOOL))
-					.unlockedBy("has_gray_wool", has(Items.GRAY_WOOL))
+					.unlockedBy("has_yellow_wool", has(Items.WOOL.yellow()))
+					.unlockedBy("has_gray_wool", has(Items.WOOL.gray()))
 					.save(output);
 		}
 

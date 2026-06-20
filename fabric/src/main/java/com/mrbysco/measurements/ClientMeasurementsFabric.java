@@ -25,13 +25,13 @@ public class ClientMeasurementsFabric implements ClientModInitializer {
 		LevelRenderEvents.AFTER_TRANSLUCENT_TERRAIN.register(context -> {
 			Minecraft mc = Minecraft.getInstance();
 			GameRenderer gameRenderer = context.gameRenderer();
-			Matrix4fc projectionMatrix = gameRenderer.getGameRenderState().levelRenderState.cameraRenderState.viewRotationMatrix;
+			Matrix4fc projectionMatrix = gameRenderer.gameRenderState().levelRenderState.cameraRenderState.viewRotationMatrix;
 			ClientClass.onRenderWorldLast(
 					mc.player,
 					projectionMatrix,
 					context.poseStack(),
-					mc.renderBuffers(),
-					gameRenderer.getMainCamera()
+					context.submitNodeCollector(),
+					gameRenderer.mainCamera()
 			);
 		});
 	}

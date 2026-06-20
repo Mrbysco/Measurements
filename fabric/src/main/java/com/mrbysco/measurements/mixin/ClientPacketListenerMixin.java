@@ -15,7 +15,7 @@ public class ClientPacketListenerMixin {
 			target = "Lnet/minecraft/client/player/LocalPlayer;resetPos()V",
 			shift = At.Shift.AFTER,
 			ordinal = 0))
-	public void measurements$handleLogin(ClientboundLoginPacket loginPacket, CallbackInfo ci) {
+	public void measurements$handleLogin(ClientboundLoginPacket packet, CallbackInfo ci) {
 		ClientClass.onLogIn();
 	}
 }

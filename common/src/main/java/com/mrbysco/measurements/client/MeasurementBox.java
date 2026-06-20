@@ -7,8 +7,7 @@ import com.mrbysco.measurements.config.TextColor;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderBuffers;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -23,7 +22,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
-import org.joml.Matrix4f;
 import org.joml.Matrix4fc;
 
 import java.util.ArrayList;
@@ -81,7 +79,7 @@ public class MeasurementBox {
 		this.setBoundingBox();
 	}
 
-	public void render(ResourceKey<Level> currentDimensionKey, PoseStack poseStack, RenderBuffers renderBuffers, Camera camera, Matrix4fc projection) {
+	public void render(ResourceKey<Level> currentDimensionKey, PoseStack poseStack, SubmitNodeCollector nodeCollector, Camera camera, Matrix4fc projection) {
 		if (!dimensionKey.identifier().equals(currentDimensionKey.identifier())) return;
 
 		int color = this.lineColor.getTextureDiffuseColor();
@@ -98,15 +96,13 @@ public class MeasurementBox {
 			lineWidth = MeasurementConfig.CLIENT.lineWidthMax.get();
 		}
 
-		MultiBufferSource.BufferSource bufferSource = renderBuffers.bufferSource();
-
 		Gizmos.cuboid(box, GizmoStyle.stroke(ARGB.colorFromFloat(a, r, g, b), lineWidth), true);
 
 		//Render the line length text
-		drawLength(poseStack, camera, projection, bufferSource);
+		drawLength(poseStack, camera, projection, nodeCollector);
 	}
 
-	private void drawLength(PoseStack poseStack, Camera camera, Matrix4fc projection, MultiBufferSource.BufferSource bufferSource) {
+	private void drawLength(PoseStack poseStack, Camera camera, Matrix4fc projection, SubmitNodeCollector nodeCollector) {
 		final int lengthX = (int) box.getXsize();
 		final int lengthY = (int) box.getYsize();
 		final int lengthZ = (int) box.getZsize();
@@ -159,9 +155,9 @@ public class MeasurementBox {
 		poseStack.pushPose();
 		poseStack.translate(-pos.x, -pos.y, -pos.z);
 
-		drawText(poseStack, camera, new Vec3(lineXPoint.x, lineXPoint.y, lineXPoint.z), Component.literal(String.valueOf(lengthX)), this.textX, bufferSource);
-		drawText(poseStack, camera, new Vec3(lineYPoint.x, lineYPoint.y, lineYPoint.z), Component.literal(String.valueOf(lengthY)), this.textY, bufferSource);
-		drawText(poseStack, camera, new Vec3(lineZPoint.x, lineZPoint.y, lineZPoint.z), Component.literal(String.valueOf(lengthZ)), this.textZ, bufferSource);
+		drawText(poseStack, camera, new Vec3(lineXPoint.x, lineXPoint.y, lineXPoint.z), Component.literal(String.valueOf(lengthX)), this.textX, nodeCollector);
+		drawText(poseStack, camera, new Vec3(lineYPoint.x, lineYPoint.y, lineYPoint.z), Component.literal(String.valueOf(lengthY)), this.textY, nodeCollector);
+		drawText(poseStack, camera, new Vec3(lineZPoint.x, lineZPoint.y, lineZPoint.z), Component.literal(String.valueOf(lengthZ)), this.textZ, nodeCollector);
 		poseStack.popPose();
 	}
 
@@ -221,7 +217,7 @@ public class MeasurementBox {
 	}
 
 
-	private void drawText(PoseStack poseStack, Camera camera, Vec3 pos, Component length, DyeColor textColor, MultiBufferSource.BufferSource bufferSource) {
+	private void drawText(PoseStack poseStack, Camera camera, Vec3 pos, Component length, DyeColor textColor, SubmitNodeCollector nodeCollector) {
 		final Font font = Minecraft.getInstance().font;
 		final float size = MeasurementConfig.CLIENT.textSize.get().floatValue();
 
@@ -231,8 +227,19 @@ public class MeasurementBox {
 		poseStack.mulPose(Axis.YP.rotationDegrees(180.0F));
 		poseStack.scale(-size, -size, -size);
 		poseStack.translate(-font.width(length) / 2f, 0, 0);
-		Matrix4f pose = poseStack.last().pose();
-		font.drawInBatch(length, 0F, 0F, textColor.getTextColor(), false, pose, bufferSource, Font.DisplayMode.SEE_THROUGH, 0, 15728880);
+		nodeCollector.submitText(
+				poseStack,
+				0F,
+				0F,
+				length.getVisualOrderText(),
+				false,
+				Font.DisplayMode.SEE_THROUGH,
+				15728880,
+				textColor.getTextColor(),
+				0,
+				0
+		);
+//		font.drawInBatch(length, 0F, 0F, textColor.getTextColor(), false, pose, bufferSource, Font.DisplayMode.SEE_THROUGH, 0, 15728880);
 		poseStack.popPose();
 	}
 
