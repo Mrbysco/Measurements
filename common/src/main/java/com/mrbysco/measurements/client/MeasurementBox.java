@@ -233,13 +233,12 @@ public class MeasurementBox {
 				0F,
 				length.getVisualOrderText(),
 				false,
-				Font.DisplayMode.SEE_THROUGH,
+				Font.DisplayMode.NORMAL,
 				15728880,
 				textColor.getTextColor(),
 				0,
 				0
 		);
-//		font.drawInBatch(length, 0F, 0F, textColor.getTextColor(), false, pose, bufferSource, Font.DisplayMode.SEE_THROUGH, 0, 15728880);
 		poseStack.popPose();
 	}
 
