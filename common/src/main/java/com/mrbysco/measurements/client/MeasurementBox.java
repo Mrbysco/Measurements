@@ -223,8 +223,8 @@ public class MeasurementBox {
 
 		poseStack.pushPose();
 		poseStack.translate(pos.x, pos.y + size * 5.0, pos.z);
-		poseStack.mulPose(camera.rotation());
-		poseStack.mulPose(Axis.YP.rotationDegrees(180.0F));
+		poseStack.rotate(camera.rotation());
+		poseStack.rotateDegrees(Axis.YP, 180.0F);
 		poseStack.scale(-size, -size, -size);
 		poseStack.translate(-font.width(length) / 2f, 0, 0);
 		nodeCollector.submitText(

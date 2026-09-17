@@ -23,7 +23,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "measurements:tape_measure"
+        "recipes": "measurements:tape_measure"
       },
       "trigger": "minecraft:recipe_unlocked"
     },

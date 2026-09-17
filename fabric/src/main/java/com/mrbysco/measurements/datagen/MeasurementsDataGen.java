@@ -7,16 +7,16 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags;
+import net.minecraft.advancements.Advancement;
 import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.ItemModelGenerators;
 import net.minecraft.client.data.models.model.ModelTemplates;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.data.recipes.RecipeCategory;
-import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
+import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.world.item.Items;
-import org.jetbrains.annotations.NotNull;
+import net.minecraft.world.item.crafting.Recipe;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -25,7 +25,7 @@ public class MeasurementsDataGen implements DataGeneratorEntrypoint {
 	public void onInitializeDataGenerator(FabricDataGenerator generator) {
 		var pack = generator.createPack();
 
-		pack.addProvider(MeasurementsRecipeProvider.Runner::new);
+		pack.addProvider(MeasurementsRecipeProvider::new);
 		pack.addProvider(MeasurementsModels::new);
 	}
 
@@ -46,42 +46,30 @@ public class MeasurementsDataGen implements DataGeneratorEntrypoint {
 		}
 	}
 
-	public static class MeasurementsRecipeProvider extends RecipeProvider {
-		public MeasurementsRecipeProvider(HolderLookup.Provider registries, RecipeOutput output) {
-			super(registries, output);
+	public static class MeasurementsRecipeProvider extends FabricRecipeProvider {
+
+		public MeasurementsRecipeProvider(FabricPackOutput output, CompletableFuture<Provider> registriesFuture) {
+			super(output, registriesFuture);
 		}
 
 		@Override
-		public void buildRecipes() {
-			shaped(RecipeCategory.TOOLS, MeasurementRegistry.TAPE_MEASURE_ITEM.get())
-					.pattern(" G ")
-					.pattern("GIY")
-					.pattern(" GY")
-					.define('I', ConventionalItemTags.IRON_INGOTS)
-					.define('Y', Items.WOOL.yellow())
-					.define('G', Items.WOOL.gray())
-					.unlockedBy("has_iron_ingot", has(ConventionalItemTags.IRON_INGOTS))
-					.unlockedBy("has_yellow_wool", has(Items.WOOL.yellow()))
-					.unlockedBy("has_gray_wool", has(Items.WOOL.gray()))
-					.save(output);
-		}
-
-		public static class Runner extends FabricRecipeProvider {
-
-			public Runner(FabricPackOutput output, CompletableFuture<Provider> registriesFuture) {
-				super(output, registriesFuture);
-			}
-
-			@Override
-			@NotNull
-			protected RecipeProvider createRecipeProvider(HolderLookup.Provider provider, RecipeOutput recipeOutput) {
-				return new MeasurementsRecipeProvider(provider, recipeOutput);
-			}
-
-			@Override
-			public String getName() {
-				return "Measurements Recipes";
-			}
+		protected RecipeProvider createRecipeProvider(Provider registries, BootstrapContext<Recipe<?>> recipes, BootstrapContext<Advancement> advancements) {
+			return new RecipeProvider(recipes, advancements) {
+				@Override
+				public void buildRecipes() {
+					shaped(RecipeCategory.TOOLS, MeasurementRegistry.TAPE_MEASURE_ITEM.get())
+							.pattern(" G ")
+							.pattern("GIY")
+							.pattern(" GY")
+							.define('I', ConventionalItemTags.IRON_INGOTS)
+							.define('Y', Items.WOOL.yellow())
+							.define('G', Items.WOOL.gray())
+							.unlockedBy("has_iron_ingot", has(ConventionalItemTags.IRON_INGOTS))
+							.unlockedBy("has_yellow_wool", has(Items.WOOL.yellow()))
+							.unlockedBy("has_gray_wool", has(Items.WOOL.gray()))
+							.save(output);
+				}
+			};
 		}
 	}
 }

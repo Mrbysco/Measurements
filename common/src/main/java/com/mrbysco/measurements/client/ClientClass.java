@@ -39,7 +39,7 @@ public class ClientClass {
 
 					if (rayHit != null && rayHit.getType() == HitResult.Type.BLOCK) {
 						BlockHitResult blockHitResult = (BlockHitResult) rayHit;
-						lastBox.setBlockEnd(new BlockPos(blockHitResult.getBlockPos()));
+						lastBox.setBlockEnd(blockHitResult.getBlockPos());
 					}
 				}
 			}
