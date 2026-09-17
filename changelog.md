@@ -1,1 +1,1 @@
-* Change font DisplayMode to NORMAL instead of SEE_THROUGH (To fix black squares when using Iris shaders)
+* Update to 26.3
