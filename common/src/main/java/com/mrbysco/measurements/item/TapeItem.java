@@ -8,7 +8,7 @@ import net.minecraft.world.item.context.UseOnContext;
 
 public class TapeItem extends Item {
 	public TapeItem(Properties properties) {
-		super(properties);
+		super(properties.stacksTo(1));
 	}
 
 	@Override
