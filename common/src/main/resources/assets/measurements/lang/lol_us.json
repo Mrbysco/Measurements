@@ -1,0 +1,21 @@
+{
+  "_comment": "Items",
+  "item.measurements.tape_measure": "Taep Meowsure",
+
+  "_comment": "ClothConfig",
+  "text.autoconfig.measurements.title": "Meowsurements",
+  "text.autoconfig.measurements.option.client": "Cwient",
+  "text.autoconfig.measurements.option.client.lineColor": "which pwetty color for da line",
+  "text.autoconfig.measurements.option.client.textColor": "which pwetty color for da text",
+  "text.autoconfig.measurements.option.client.textSize": "how big iz text",
+  "text.autoconfig.measurements.option.client.lineWidth": "how thik is da line",
+  "text.autoconfig.measurements.option.client.lineWidthMax": "line no bigger dan dis",
+
+  "_comment": "NeoForge Config",
+  "measurements.configuration.client": "Cwient",
+  "measurements.configuration.lineColor": "which pwetty color for da line",
+  "measurements.configuration.textColor": "which pwetty color for da text",
+  "measurements.configuration.textSize": "how big iz text",
+  "measurements.configuration.lineWidth": "how thik is da line",
+  "measurements.configuration.lineWidthMax": "line no bigger dan dis"
+}
